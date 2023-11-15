@@ -1,0 +1,44 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto+Mono);
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+
+/* .fixed-top .navbar-title {
+  transform: scale(0);
+  transition: 0.5s;
+} */
+
+.fixed-top .navbar-title {
+  opacity: 1;
+  transition: opacity 0.5s ease-out 0.5s;
+}
+
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* The animation code */
+@keyframes example {
+  from {transform: rotate(10deg)}
+  to {transform: rotate(-10deg)}
+}
+
+/* The element to apply the animation to */
+.shake {
+  width: 100px;
+  height: 100px;
+  animation-name: example;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
