@@ -42,7 +42,7 @@ const CBox = () => {
     }, [])
 
     async function getBlockReward() {
-        await fetch('https://apis.karlsencoin.com/info/blockreward')
+        await fetch('https://api.karlsencoin.com/info/blockreward')
             .then((response) => response.json())
             .then(d => {
                 setBlockReward(d.blockreward.toFixed(2))
