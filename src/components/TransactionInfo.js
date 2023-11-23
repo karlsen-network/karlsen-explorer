@@ -8,7 +8,7 @@ import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { parsePayload } from "../bech32.js";
 import { numberWithCommas } from "../helper.js";
-import { getBlock, getTransaction, getTransactions } from '../kaspa-api-client.js';
+import { getBlock, getTransaction, getTransactions } from '../karlsen-api-client.js';
 import BlueScoreContext from "./BlueScoreContext.js";
 import CopyButton from "./CopyButton.js";
 import PriceContext from "./PriceContext.js";
@@ -149,7 +149,7 @@ const TransactionInfo = () => {
                                     <Col className="blockinfo-key" lg={2}>Transaction fee</Col>
                                     <Col className="blockinfo-value-mono" lg={10}>
                                         {txInfo && additionalTxInfo &&
-                                            <>{(txInfo.inputs.map((tx_input) => (getOutputFromIndex(additionalTxInfo[tx_input.previous_outpoint_hash]?.outputs || [], tx_input.previous_outpoint_index)?.amount || 0)).reduce((a, b) => a + b) - (txInfo.outputs?.map((v) => v.amount) || [0]).reduce((a, b) => a + b)) / 100000000} KAS</>
+                                            <>{(txInfo.inputs.map((tx_input) => (getOutputFromIndex(additionalTxInfo[tx_input.previous_outpoint_hash]?.outputs || [], tx_input.previous_outpoint_index)?.amount || 0)).reduce((a, b) => a + b) - (txInfo.outputs?.map((v) => v.amount) || [0]).reduce((a, b) => a + b)) / 100000000} KLS</>
                                         }
                                     </Col>
                                 </Row>}
@@ -202,7 +202,7 @@ const TransactionInfo = () => {
                                                 <div className="blockinfo-key mt-2">Amount</div>
                                                 <div className="utxo-value">
                                                     <span className="utxo-amount-minus">-{getOutputFromIndex(additionalTxInfo[tx_input.previous_outpoint_hash]
-                                                        .outputs, tx_input.previous_outpoint_index).amount / 100000000}&nbsp;KAS</span>
+                                                        .outputs, tx_input.previous_outpoint_index).amount / 100000000}&nbsp;KLS</span>
                                                 </div>
                                             </Col>}
                                             <Col sm={12} md={12} lg={12}>
@@ -248,7 +248,7 @@ const TransactionInfo = () => {
                                             <Col sm={6} md={6} lg={3}>
                                                 <div className="blockinfo-key mt-2 mt-lg-0">Amount</div>
                                                 <div className="utxo-value">
-                                                    <span className="utxo-amount">+{numberWithCommas(tx_output.amount / 100000000)}&nbsp;KAS</span>
+                                                    <span className="utxo-amount">+{numberWithCommas(tx_output.amount / 100000000)}&nbsp;KLS</span>
                                                 </div>
                                             </Col>
                                             <Col sm={12} md={12} lg={12}>

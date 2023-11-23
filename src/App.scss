@@ -179,7 +179,7 @@ body {
 //   }
 // }
 
-.big-kaspa-icon {
+.big-karlsen-icon {
   position: relative;
   margin-bottom: -3rem;
   top: 0rem;
@@ -195,7 +195,7 @@ body {
 }
 
 @include media-breakpoint-up(md) {
-  .big-kaspa-icon {
+  .big-karlsen-icon {
     width: 10rem;
     height: 10rem;
   }
@@ -572,7 +572,7 @@ body {
   justify-content: space-around;
 }
 
-.kasBlock {
+.klsBlock {
   color: $color1;
   background-color: $color5;
   border: 1px solid $color4;
@@ -601,7 +601,7 @@ body {
   max-width: 1px;
 }
 
-.kasBlockHeader {
+.klsBlockHeader {
   font-weight: bold;
   font-size: large;
 }

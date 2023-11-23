@@ -8,7 +8,7 @@ import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { parsePayload } from "../bech32.js";
 import { numberWithCommas } from "../helper.js";
-import { getBlock, getTransactions } from '../kaspa-api-client.js';
+import { getBlock, getTransactions } from '../karlsen-api-client.js';
 import BlueScoreContext from "./BlueScoreContext.js";
 import CopyButton from "./CopyButton.js";
 import PriceContext from "./PriceContext.js";
@@ -134,9 +134,9 @@ const BlockInfo = () => {
                                     <Col className="blockinfo-key" lg={2}>Hash</Col>
                                     <Col className="blockinfo-value-mono" lg={10}>{blockInfo.verboseData.hash}
                                         <CopyButton text={blockInfo.verboseData.hash} />
-                                        <OverlayTrigger overlay={<Tooltip id="tooltip-kgi">Open in Kaspa Graph Inspector</Tooltip>}>
+                                        <OverlayTrigger overlay={<Tooltip id="tooltip-kgi">Open in Karlsen Graph Inspector</Tooltip>}>
                                             <span>
-                                                <BiNetworkChart className="ms-2 copy-symbol" size="20" onClick={() => { window.open(`https://kgi.kaspad.net/?hash=${id}`, '_blank'); }} />
+                                                <BiNetworkChart className="ms-2 copy-symbol" size="20" onClick={() => { window.open(`https://kgi.karlsencoin.com/?hash=${id}`, '_blank'); }} />
                                             </span>
                                         </OverlayTrigger>
                                     </Col>
@@ -250,11 +250,11 @@ const BlockInfo = () => {
                                                                     </Link>
                                                                     <CopyButton text={getAddrFromOutputs(txInfo[txInput.previousOutpoint.transactionId]["outputs"], txInput.previousOutpoint.index || 0)} />
                                                                 </Col><Col className="block-utxo-amount-minus" xs={12} sm={4} md={2}>
-                                                                    -{numberWithCommas(getAmountFromOutputs(txInfo[txInput.previousOutpoint.transactionId]["outputs"], txInput.previousOutpoint.index || 0))}&nbsp;KAS
+                                                                    -{numberWithCommas(getAmountFromOutputs(txInfo[txInput.previousOutpoint.transactionId]["outputs"], txInput.previousOutpoint.index || 0))}&nbsp;KLS
                                                                 </Col></>
                                                                 :
                                                                 <><Col xs={12} sm={8} md={9} lg={9} xl={8} xxl={7} className="text-truncate">
-                                                                    <a className="blockinfo-link" href={`https://katnip.kaspad.net/tx/${txInput.previousOutpoint.transactionId}`} target="_blank">
+                                                                    <a className="blockinfo-link" href={`https://katnip.karlsencoin.com/tx/${txInput.previousOutpoint.transactionId}`} target="_blank">
                                                                         TX #{txInput.previousOutpoint.index || 0} {txInput.previousOutpoint.transactionId}
                                                                     </a>
                                                                 </Col><Col className="me-auto" xs={12} sm={4} md={2}></Col>
@@ -276,14 +276,14 @@ const BlockInfo = () => {
                                                                 </Link>
 
                                                                 <CopyButton text={txOutput.verboseData.scriptPublicKeyAddress} />
-                                                            </Col><Col className="block-utxo-amount" xs={12} sm={4} md={3}>+{numberWithCommas(txOutput.amount / 100000000)}&nbsp;KAS</Col>
+                                                            </Col><Col className="block-utxo-amount" xs={12} sm={4} md={3}>+{numberWithCommas(txOutput.amount / 100000000)}&nbsp;KLS</Col>
                                                         </Row>)}
                                                     </Container>
                                                 </Col>
                                             </Col>
                                             <Col sm={5} md={4}>
                                                 <div className="utxo-header mt-3">tx amount</div>
-                                                <div className="utxo-value d-flex flex-row"><div className="utxo-amount">{(numberWithCommas(tx.outputs.reduce((a, b) => (a || 0) + parseInt(b.amount), 0) / 100000000))} KAS</div></div>
+                                                <div className="utxo-value d-flex flex-row"><div className="utxo-amount">{(numberWithCommas(tx.outputs.reduce((a, b) => (a || 0) + parseInt(b.amount), 0) / 100000000))} KLS</div></div>
                                             </Col>
                                             <Col sm={3} md={2}>
                                                 <div className="utxo-header mt-3">tx value</div>

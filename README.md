@@ -16,4 +16,4 @@ Do you have any new ideas, wishes or bugs for Karlsen explorer? Contact @Lemois#
 ## DONATION ♥
 
 Please consider a donation for Kaspa explorer team: [kaspa:qqkqkzjvr7zwxxmjxjkmxxdwju9kjs6e9u82uh59z07vgaks6gg62v8707g73](https://explorer.kaspa.org/addresses/kaspa:qqkqkzjvr7zwxxmjxjkmxxdwju9kjs6e9u82uh59z07vgaks6gg62v8707g73)
-Please consider a donation for Kaspa explorer team - even in the Karlsen network (they own the adress): [karlsen:qqkqkzjvr7zwxxmjxjkmxxdwju9kjs6e9u82uh59z07vgaks6gg62v8707g73](https://explorer.karlsencoin.com/addresses/karlsen:qqkqkzjvr7zwxxmjxjkmxxdwju9kjs6e9u82uh59z07vgaks6gg62v8707g73)
+Please consider a donation for Kaspa explorer team - even in the Karlsen network (they own the adress): [karlsen:qqe3p64wpjf5y27kxppxrgks298ge6lhu6ws7ndx4tswzj7c84qkjlrspcuxw](https://explorer.karlsencoin.com/addresses/karlsen:qqe3p64wpjf5y27kxppxrgks298ge6lhu6ws7ndx4tswzj7c84qkjlrspcuxw)

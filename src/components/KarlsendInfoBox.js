@@ -5,7 +5,7 @@ import { FaMemory } from 'react-icons/fa';
 
 
 
-const KaspadInfoBox = () => {
+const KarlsendInfoBox = () => {
     const [data, setData] = useState({});
 
     async function updateData() {
@@ -32,7 +32,7 @@ const KaspadInfoBox = () => {
                 </tr>
                 <tr>
                     <td colspan="2" className="text-center">
-                        <h3>karlsenD INFO</h3>
+                        <h3>KARLSEND INFO</h3>
                     </td>
                 </tr>
                 <tr>
@@ -57,4 +57,4 @@ const KaspadInfoBox = () => {
 }
 
 
-export default KaspadInfoBox
+export default KarlsendInfoBox

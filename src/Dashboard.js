@@ -8,10 +8,10 @@ import BalanceModal from './components/BalanceModal';
 import BlockDAGBox from './components/BlockDAG';
 import BlockOverview from './components/BlockOverview';
 import CoinsupplyBox from './components/CoinsupplyBox';
-import KaspadInfoBox from './components/KaspadInfoBox';
+import KarlsendInfoBox from './components/KarlsendInfoBox';
 import MarketDataBox from './components/MarketDataBox';
 import TxOverview from './components/TxOverview';
-import { getBlock } from './kaspa-api-client';
+import { getBlock } from './karlsen-api-client';
 
 
 
@@ -70,9 +70,9 @@ function Dashboard() {
         <Container className="firstRow webpage" fluid>
           <Row>
             <Col md={12} className='d-flex flex-row justify-content-start text-light d-xs-none align-items-center'>
-              <img className="big-kaspa-icon" src="/k-icon-glow.png" />
+              <img className="big-karlsen-icon" src="/k-icon-glow.png" />
               <div className="bigfont">
-                karlsen<br />EXPLORER
+                KARLSEN<br />EXPLORER
               </div>
             </Col>
           </Row>
@@ -96,7 +96,7 @@ function Dashboard() {
               <CoinsupplyBox />
             </div></Col>
             <Col sm={12} md={6} xl={3}><div className="infoBox"><BlockDAGBox /></div></Col>
-            <Col sm={12} md={6} xl={3}><div className="infoBox"><KaspadInfoBox /></div></Col>
+            <Col sm={12} md={6} xl={3}><div className="infoBox"><KarlsendInfoBox /></div></Col>
             <Col sm={12} md={6} xl={3}><div className="infoBox"><MarketDataBox /></div></Col>
           </Row>
         </Container>

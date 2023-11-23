@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { HiCurrencyDollar } from 'react-icons/hi';
 import { IoMdTrendingDown, IoMdTrendingUp } from 'react-icons/io';
 import { numberWithCommas } from "../helper";
-import { getCoinSupply } from '../kaspa-api-client';
+import { getCoinSupply } from '../karlsen-api-client';
 import PriceContext from "./PriceContext";
 
 
@@ -38,7 +38,7 @@ const MarketDataBox = () => {
                 </tr>
                 <tr>
                     <td className="cardBoxElement">Price</td>
-                    <td>$ {price} / KAS</td>
+                    <td>$ {price} / KLS</td>
                 </tr>
                 <tr>
                     <td style={{ fontSize: "small" }} className="cardBoxElement" align="right">1h %</td>
@@ -67,7 +67,7 @@ const MarketDataBox = () => {
                 </tr>
                 <tr>
                     <td className="cardBoxElement">MCAP</td>
-                    <td className="pt-1">$ {(circCoinsMData * price / 1000000).toFixed(2)} M <a href="https://www.coingecko.com/en/coins/kaspa" target="_blank" className="rank ms-1">Rank #{marketData?.market_cap_rank}</a></td>
+                    <td className="pt-1">$ {(circCoinsMData * price / 1000000).toFixed(2)} M <a href="https://www.coingecko.com/en/coins/karlsen" target="_blank" className="rank ms-1">Rank #{marketData?.market_cap_rank}</a></td>
                 </tr>
             </table>
         </div>

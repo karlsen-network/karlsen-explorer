@@ -6,10 +6,10 @@ const BalanceModal = (props) => {
     <>
       <Modal size="lg" show={props.show} onHide={props.handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>KAS Balance from REST-API</Modal.Title>
+          <Modal.Title>KLS Balance from REST-API</Modal.Title>
         </Modal.Header>
-        <Modal.Body>The $KAS balance for <br />{props.address} is:<br />
-        <b>{props.balance} KAS</b></Modal.Body>
+        <Modal.Body>The $KLS balance for <br />{props.address} is:<br />
+        <b>{props.balance} KLS</b></Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={props.handleClose}>
             Close
