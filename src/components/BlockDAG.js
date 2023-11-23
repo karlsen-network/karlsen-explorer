@@ -139,7 +139,7 @@ const BlockDAGBox = () => {
                         Hashrate
                     </td>
                     <td className="pt-1" id="hashrate">
-                        {(hashrate / 1000).toFixed(3)} PH/s
+                        {hashrate} TH/s
                     </td>
                 </tr>
             </table>
