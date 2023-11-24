@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
 import { useContext, useEffect, useState } from "react";
 import { numberWithCommas } from "../helper";
-import { getCoinSupply, getHalving } from '../kaspa-api-client';
+import { getCoinSupply, getHalving } from '../karlsen-api-client';
 import PriceContext from "./PriceContext";
 
 
@@ -42,7 +42,7 @@ const CBox = () => {
     }, [])
 
     async function getBlockReward() {
-        await fetch('https://apis.karlsencoin.com/info/blockreward')
+        await fetch('https://api.karlsencoin.com/info/blockreward')
             .then((response) => response.json())
             .then(d => {
                 setBlockReward(d.blockreward.toFixed(2))
@@ -83,13 +83,13 @@ const CBox = () => {
                     <td className="cardBoxElement align-top">
                         Total</td>
                     <td className="">
-                        <div id="coins">{numberWithCommas(circCoins)} KAS
+                        <div id="coins">{numberWithCommas(circCoins)} KLS
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td className="cardBoxElement align-top">Max <span className="approx">(approx.)</span></td>
-                    <td className="pt-1">28,700,000,000 KAS</td>
+                    <td className="pt-1">28,700,000,000 KLS</td>
                 </tr>
                 <tr>
                     <td className="cardBoxElement align-top">Mined</td>
@@ -97,7 +97,7 @@ const CBox = () => {
                 </tr>
                 <tr>
                     <td className="cardBoxElement align-top">Block reward</td>
-                    <td className="pt-1">{blockReward} KAS</td>
+                    <td className="pt-1">{blockReward} KLS</td>
                 </tr>
                 <tr>
                     <td className="cardBoxElement align-top">Reward reduction
@@ -107,7 +107,7 @@ const CBox = () => {
                             </span>
                         </OverlayTrigger> */}
                     </td>
-                    <td className="pt-1">{halvingDate}<br /><div className="text-end w-100 pe-3 pt-1" style={{ fontSize: "small" }}>to {halvingAmount} KAS</div></td>
+                    <td className="pt-1">{halvingDate}<br /><div className="text-end w-100 pe-3 pt-1" style={{ fontSize: "small" }}>to {halvingAmount} KLS</div></td>
                 </tr>
             </table>
         </div>

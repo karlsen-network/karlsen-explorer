@@ -1,7 +1,7 @@
 import { faDiagramProject } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from "react";
-import { getBlockdagInfo } from '../kaspa-api-client';
+import { getBlockdagInfo } from '../karlsen-api-client';
 
 
 const BlockDAGBox = () => {
@@ -107,7 +107,7 @@ const BlockDAGBox = () => {
                         Network name
                     </td>
                     <td className="pt-1 text-nowrap">
-                        karlsen MAINNET
+                        KARLSEN MAINNET
                     </td>
                 </tr>
                 <tr>
@@ -139,7 +139,7 @@ const BlockDAGBox = () => {
                         Hashrate
                     </td>
                     <td className="pt-1" id="hashrate">
-                        {(hashrate / 1000).toFixed(3)} PH/s
+                        {hashrate} TH/s
                     </td>
                 </tr>
             </table>

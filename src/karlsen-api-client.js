@@ -1,4 +1,4 @@
-const API_BASE = "https://apis.karlsencoin.com/"
+const API_BASE = "https://api.karlsencoin.com/"
 
 export async function getBlock(hash) {
     const res = await fetch(`${API_BASE}blocks/${hash}`, { headers: { 'Access-Control-Allow-Origin': '*' } })

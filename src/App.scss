@@ -6,16 +6,16 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto+Mono);
 
 
-$color1: #F6F5F4;
-$color2: #14F1D9;
-$color3: #519AA3;
-$color4: #7F8994;
-$color5: #181D30;
+$color1: #FAFAFB;
+$color2: #A1AEB7;
+$color3: #636A6D;
+$color4: #87817F;
+$color5: #2A2B38;
 $superdark: $color5;
 
 $theme-colors: (
   "primary": $color2,
-  "info": #181d30,
+  "info": $color5,
   "success": #4ea969,
   "warning": #cb9931,
   "danger": #f44336,
@@ -42,7 +42,7 @@ body {
 }
 
 #navbar-container {
-  max-width: 1300px;
+  max-width: 1400px;
 }
 
 .navbar-price {
@@ -165,7 +165,7 @@ body {
 
 @include media-breakpoint-up(md) {
   .bigfont {
-    margin-top: 4rem;
+    margin-top: 2.7rem;
     font-size: 4.4rem;
     line-height: 4.4rem;
   }
@@ -179,7 +179,17 @@ body {
 //   }
 // }
 
-.big-kaspa-icon {
+.align-karlsen-top {
+  margin-top: 0px;
+}
+
+@include media-breakpoint-up(md) {
+  .align-karlsen-top {
+    margin-top: -40px;
+  }
+}
+
+.big-karlsen-icon {
   position: relative;
   margin-bottom: -3rem;
   top: 0rem;
@@ -195,7 +205,7 @@ body {
 }
 
 @include media-breakpoint-up(md) {
-  .big-kaspa-icon {
+  .big-karlsen-icon {
     width: 10rem;
     height: 10rem;
   }
@@ -296,11 +306,11 @@ body {
 }
 
 .colsize>div {
-  max-width: 1300px;
+  max-width: 1400px;
 }
 
 .webpage {
-  max-width: 1300px;
+  max-width: 1400px;
 }
 
 .row1 {
@@ -572,7 +582,7 @@ body {
   justify-content: space-around;
 }
 
-.kasBlock {
+.klsBlock {
   color: $color1;
   background-color: $color5;
   border: 1px solid $color4;
@@ -601,7 +611,7 @@ body {
   max-width: 1px;
 }
 
-.kasBlockHeader {
+.klsBlockHeader {
   font-weight: bold;
   font-size: large;
 }
