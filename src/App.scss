@@ -179,6 +179,16 @@ body {
 //   }
 // }
 
+.align-karlsen-top {
+  margin-top: 0px;
+}
+
+@include media-breakpoint-up(md) {
+  .align-karlsen-top {
+    margin-top: -40px;
+  }
+}
+
 .big-karlsen-icon {
   position: relative;
   margin-bottom: -3rem;

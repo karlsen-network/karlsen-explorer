@@ -61,7 +61,7 @@ function Dashboard() {
 
   //<Button variant="primary">Go!</Button>
   return (
-    <div>
+    <div className="align-karlsen-top">
       <Modal show={showLoadingModal} animation={false} centered>
         <Modal.Body className="d-flex flex-row justify-content-center" style={{backgroundColor: "#181D30"}}>
           <Spinner animation="border" variant="primary" size="xl" /></Modal.Body>
