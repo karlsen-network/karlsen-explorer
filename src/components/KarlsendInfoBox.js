@@ -5,11 +5,11 @@ import { FaMemory } from 'react-icons/fa';
 
 
 
-const KaspadInfoBox = () => {
+const KarlsendInfoBox = () => {
     const [data, setData] = useState({});
 
     async function updateData() {
-        await fetch('https://apis.karlsencoin.com/info/karlsend')
+        await fetch('https://api.karlsencoin.com/info/karlsend')
             .then((response) => response.json())
             .then(d => setData(d))
             .catch(err => console.log("Error", err))
@@ -32,7 +32,7 @@ const KaspadInfoBox = () => {
                 </tr>
                 <tr>
                     <td colspan="2" className="text-center">
-                        <h3>karlsenD INFO</h3>
+                        <h3>KARLSEND INFO</h3>
                     </td>
                 </tr>
                 <tr>
@@ -57,4 +57,4 @@ const KaspadInfoBox = () => {
 }
 
 
-export default KaspadInfoBox
+export default KarlsendInfoBox
