@@ -6,16 +6,16 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto+Mono);
 
 
-$color1: #F6F5F4;
-$color2: #14F1D9;
-$color3: #519AA3;
-$color4: #7F8994;
-$color5: #181D30;
+$color1: #FAFAFB;
+$color2: #A1AEB7;
+$color3: #636A6D;
+$color4: #87817F;
+$color5: #2A2B38;
 $superdark: $color5;
 
 $theme-colors: (
   "primary": $color2,
-  "info": #181d30,
+  "info": $color5,
   "success": #4ea969,
   "warning": #cb9931,
   "danger": #f44336,
