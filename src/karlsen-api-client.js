@@ -1,7 +1,7 @@
-const API_BASE = "https://api.karlsencoin.com/"
+import { apiAddress } from "./addresses";
 
 export async function getBlock(hash) {
-    const res = await fetch(`${API_BASE}blocks/${hash}`, { headers: { 'Access-Control-Allow-Origin': '*' } })
+    const res = await fetch(`https://${apiAddress}/blocks/${hash}`, { headers: { 'Access-Control-Allow-Origin': '*' } })
         .then((response) => response.json())
         .then(data => {
             return data
@@ -11,7 +11,7 @@ export async function getBlock(hash) {
 
 
 export async function getTransaction(hash) {
-    const res = await fetch(`${API_BASE}transactions/${hash}`, { headers: { 'Access-Control-Allow-Origin': '*' } })
+    const res = await fetch(`https://${apiAddress}/transactions/${hash}`, { headers: { 'Access-Control-Allow-Origin': '*' } })
         .then((response) => response.json())
         .then(data => {
             return data
@@ -20,7 +20,7 @@ export async function getTransaction(hash) {
 }
 
 export async function getBlockdagInfo() {
-    const res = await fetch(`${API_BASE}info/blockdag`, { headers: { 'Access-Control-Allow-Origin': '*' } })
+    const res = await fetch(`https://${apiAddress}/info/blockdag`, { headers: { 'Access-Control-Allow-Origin': '*' } })
         .then((response) => response.json())
         .then(data => {
             return data
@@ -29,7 +29,7 @@ export async function getBlockdagInfo() {
 }
 
 export async function getCoinSupply() {
-    const res = await fetch(`${API_BASE}info/coinsupply`, { headers: { 'Access-Control-Allow-Origin': '*' } })
+    const res = await fetch(`https://${apiAddress}/info/coinsupply`, { headers: { 'Access-Control-Allow-Origin': '*' } })
         .then((response) => response.json())
         .then(data => {
             return data
@@ -38,7 +38,7 @@ export async function getCoinSupply() {
 }
 
 export async function getAddressBalance(addr) {
-    const res = await fetch(`${API_BASE}addresses/${addr}/balance`, { headers: { 'Access-Control-Allow-Origin': '*' } })
+    const res = await fetch(`https://${apiAddress}/addresses/${addr}/balance`, { headers: { 'Access-Control-Allow-Origin': '*' } })
         .then((response) => response.json())
         .then(data => {
             return data.balance
@@ -48,7 +48,7 @@ export async function getAddressBalance(addr) {
 
 
 export async function getAddressTxCount(addr) {
-    const res = await fetch(`${API_BASE}addresses/${addr}/transactions-count`, { headers: { 'Access-Control-Allow-Origin': '*' } })
+    const res = await fetch(`https://${apiAddress}/addresses/${addr}/transactions-count`, { headers: { 'Access-Control-Allow-Origin': '*' } })
         .then((response) => response.json())
         .then(data => {
             return data.total
@@ -59,7 +59,7 @@ export async function getAddressTxCount(addr) {
 
 
 export async function getAddressUtxos(addr) {
-    const res = await fetch(`${API_BASE}addresses/${addr}/utxos`, { headers: { 'Access-Control-Allow-Origin': '*' } })
+    const res = await fetch(`https://${apiAddress}/addresses/${addr}/utxos`, { headers: { 'Access-Control-Allow-Origin': '*' } })
         .then((response) => response.json())
         .then(data => {
             return data
@@ -70,7 +70,7 @@ export async function getAddressUtxos(addr) {
 
 
 export async function getHalving() {
-    const res = await fetch(`${API_BASE}info/halving`, { headers: { 'Access-Control-Allow-Origin': '*' } })
+    const res = await fetch(`https://${apiAddress}/info/halving`, { headers: { 'Access-Control-Allow-Origin': '*' } })
         .then((response) => response.json())
         .then(data => {
             return data
@@ -79,7 +79,7 @@ export async function getHalving() {
 }
 
 export async function getTransactionsFromAddress(addr, limit = 20, offset = 0) {
-    const res = await fetch(`${API_BASE}addresses/${addr}/full-transactions?limit=${limit}&offset=${offset}`, {
+    const res = await fetch(`https://${apiAddress}/addresses/${addr}/full-transactions?limit=${limit}&offset=${offset}`, {
         headers: {
             'Access-Control-Allow-Origin': '*',
             'content-type': 'application/json'
@@ -96,7 +96,7 @@ export async function getTransactionsFromAddress(addr, limit = 20, offset = 0) {
 
 
 export async function getTransactions(tx_list, inputs, outputs) {
-    const res = await fetch(`${API_BASE}transactions/search`, {
+    const res = await fetch(`https://${apiAddress}/transactions/search`, {
         headers: {
             'Access-Control-Allow-Origin': '*',
             'content-type': 'application/json'
