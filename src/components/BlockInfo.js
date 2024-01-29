@@ -12,6 +12,7 @@ import { getBlock, getTransactions } from '../karlsen-api-client.js';
 import BlueScoreContext from "./BlueScoreContext.js";
 import CopyButton from "./CopyButton.js";
 import PriceContext from "./PriceContext.js";
+import { kgiAddress } from "../addresses";
 
 const BlockLamp = (props) => {
     return <OverlayTrigger overlay={<Tooltip>It is a {props.isBlue ? "blue" : "red"} block!</Tooltip>}>
@@ -136,7 +137,7 @@ const BlockInfo = () => {
                                         <CopyButton text={blockInfo.verboseData.hash} />
                                         <OverlayTrigger overlay={<Tooltip id="tooltip-kgi">Open in Karlsen Graph Inspector</Tooltip>}>
                                             <span>
-                                                <BiNetworkChart className="ms-2 copy-symbol" size="20" onClick={() => { window.open(`https://kgi.karlsencoin.com/?hash=${id}`, '_blank'); }} />
+                                                <BiNetworkChart className="ms-2 copy-symbol" size="20" onClick={() => { window.open(`https://${kgiAddress}/?hash=${id}`, '_blank'); }} />
                                             </span>
                                         </OverlayTrigger>
                                     </Col>
@@ -254,7 +255,7 @@ const BlockInfo = () => {
                                                                 </Col></>
                                                                 :
                                                                 <><Col xs={12} sm={8} md={9} lg={9} xl={8} xxl={7} className="text-truncate">
-                                                                    <a className="blockinfo-link" href={`https://katnip.karlsencoin.com/tx/${txInput.previousOutpoint.transactionId}`} target="_blank">
+                                                                    <a className="blockinfo-link" href={`/txs/${txInput.previousOutpoint.transactionId}`} target="_blank">
                                                                         TX #{txInput.previousOutpoint.index || 0} {txInput.previousOutpoint.transactionId}
                                                                     </a>
                                                                 </Col><Col className="me-auto" xs={12} sm={4} md={2}></Col>

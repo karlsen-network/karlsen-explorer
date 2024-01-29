@@ -2,6 +2,7 @@ import { faMemory } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from "react";
 import { FaMemory } from 'react-icons/fa';
+import { apiAddress } from "../addresses";
 
 
 
@@ -9,7 +10,7 @@ const KarlsendInfoBox = () => {
     const [data, setData] = useState({});
 
     async function updateData() {
-        await fetch('https://api.karlsencoin.com/info/karlsend')
+        await fetch(`https://${apiAddress}/info/karlsend`)
             .then((response) => response.json())
             .then(d => setData(d))
             .catch(err => console.log("Error", err))

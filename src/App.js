@@ -23,6 +23,7 @@ import TxPage from './components/TxPage';
 import Dashboard from './Dashboard';
 import { getBlock } from './karlsen-api-client';
 import { Analytics } from '@vercel/analytics/react';
+import { apiAddress } from "./addresses";
 // import 'moment/min/locales';
 
 // var locale = window.navigator.userLanguage || window.navigator.language || "en";
@@ -30,7 +31,6 @@ import { Analytics } from '@vercel/analytics/react';
 // moment.locale('en');
 
 const buildVersion = process.env.REACT_APP_VERCEL_GIT_COMMIT_SHA || "xxxxxx"
-
 
 document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener('scroll', function () {
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-const socket = io("wss://api.karlsencoin.com", {
+const socket = io(`wss://${apiAddress}`, {
   path: '/ws/socket.io'
 });
 
@@ -90,7 +90,7 @@ function App() {
   }
 
   const updatePrice = () => {
-    fetch(`https://api.karlsencoin.com/info/market-data`, {
+    fetch(`https://${apiAddress}/info/market-data`, {
       headers: { "Cache-Control": "no-cache" }
     })
       .then(response => response.json())
@@ -219,7 +219,7 @@ function App() {
                       <Link className="blockinfo-link ms-3" to="/addresses/karlsen:qqe3p64wpjf5y27kxppxrgks298ge6lhu6ws7ndx4tswzj7c84qkjlrspcuxw"><BiDonateHeart size="1.3rem" /></Link>
                     </OverlayTrigger>
                     <OverlayTrigger placement="right" overlay={<Tooltip id="github">REST-API server</Tooltip>}>
-                      <a className="blockinfo-link ms-3" href="https://api.karlsencoin.com/" target="_blank"><SiFastapi size="1.3rem" /></a>
+                      <a className="blockinfo-link ms-3" href={`https://${apiAddress}/`} target="_blank"><SiFastapi size="1.3rem" /></a>
                     </OverlayTrigger>
                   </span>
                   <span className="px-3 build">|</span>
@@ -241,7 +241,7 @@ function App() {
                       <Link className="blockinfo-link ms-2" to="/addresses/karlsen:qqe3p64wpjf5y27kxppxrgks298ge6lhu6ws7ndx4tswzj7c84qkjlrspcuxw"><BiDonateHeart size="1.1rem" /></Link>
                     </OverlayTrigger>
                     <OverlayTrigger placement="right" overlay={<Tooltip id="github">REST-API server</Tooltip>}>
-                      <a className="blockinfo-link ms-2" href="https://api.karlsencoin.com/" target="_blank"><SiFastapi size="1.1rem" /></a>
+                      <a className="blockinfo-link ms-2" href={`https://${apiAddress}/`} target="_blank"><SiFastapi size="1.1rem" /></a>
                     </OverlayTrigger>
                   </span>
                 </Col>

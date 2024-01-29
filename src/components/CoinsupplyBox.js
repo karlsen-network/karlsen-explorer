@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { numberWithCommas } from "../helper";
 import { getCoinSupply, getHalving } from '../karlsen-api-client';
 import PriceContext from "./PriceContext";
+import { apiAddress } from "../addresses";
 
 
 const CBox = () => {
@@ -42,7 +43,7 @@ const CBox = () => {
     }, [])
 
     async function getBlockReward() {
-        await fetch('https://api.karlsencoin.com/info/blockreward')
+        await fetch(`https://${apiAddress}/info/blockreward`)
             .then((response) => response.json())
             .then(d => {
                 setBlockReward(d.blockreward.toFixed(2))
