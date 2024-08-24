@@ -5,12 +5,11 @@
 @import url(https://fonts.googleapis.com/css?family=Rubik);
 @import url(https://fonts.googleapis.com/css?family=Roboto+Mono);
 
-
-$color1: #FAFAFB;
-$color2: #A1AEB7;
-$color3: #636A6D;
-$color4: #87817F;
-$color5: #2A2B38;
+$color1: #fafafb;
+$color2: #a1aeb7;
+$color3: #636a6d;
+$color4: #87817f;
+$color5: #2a2b38;
 $superdark: $color5;
 
 $theme-colors: (
@@ -21,7 +20,7 @@ $theme-colors: (
   "danger": #f44336,
   "dark": $color5,
   "light": $color1,
-  "secondary": $color3
+  "secondary": $color3,
 );
 
 $border-radius: 0.8rem;
@@ -33,8 +32,18 @@ $nav-link-color: $color1;
 
 body {
   margin: 0;
-  font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family:
+    "Rubik",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -66,7 +75,6 @@ body {
 
 .search-row {
   background-color: rgba($color3, 0.6);
-
 }
 
 .search-box-group {
@@ -80,14 +88,15 @@ body {
   // max-width: 40rem;
   // color: $color1 !important;
   // background-color: $color5 !important;
-  width: 100%
+  width: 100%;
 }
 
 .beta {
   position: relative;
   top: 0.5rem;
   left: -3rem;
-  font-family: Righteous, Rubik, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: Righteous, Rubik, "Trebuchet MS", "Lucida Sans Unicode",
+    "Lucida Grande", "Lucida Sans", Arial, sans-serif;
   font-stretch: 1.2;
   color: $color2;
   opacity: 0;
@@ -102,12 +111,12 @@ body {
   }
 }
 
-
 .beta-dashboard {
   position: relative;
   top: -1rem;
   left: -2rem;
-  font-family: Righteous, Rubik, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: Righteous, Rubik, "Trebuchet MS", "Lucida Sans Unicode",
+    "Lucida Grande", "Lucida Sans", Arial, sans-serif;
   font-stretch: 1.2;
   color: $color2;
   opacity: 0;
@@ -122,7 +131,6 @@ body {
   }
 }
 
-
 @keyframes appear {
   0% {
     opacity: 0;
@@ -132,8 +140,6 @@ body {
     opacity: 1;
   }
 }
-
-
 
 .searchButton {
   height: 100%;
@@ -145,10 +151,9 @@ body {
   margin-right: 20px;
 }
 
-
 .bigfont {
-  color: $color1  !important;
-  font-family: 'Righteous', sans-serif;
+  color: $color1 !important;
+  font-family: "Righteous", sans-serif;
   // font: bold 80px/0.9em;
   font-weight: normal;
   font-size: 3.5rem;
@@ -214,11 +219,11 @@ body {
 /* The animation code */
 @keyframes rotate-icon {
   from {
-    transform: rotate(10deg)
+    transform: rotate(10deg);
   }
 
   to {
-    transform: rotate(-10deg)
+    transform: rotate(-10deg);
   }
 }
 
@@ -226,11 +231,9 @@ body {
   text-align: center;
 }
 
-
 #navbar_top {
   border-bottom: 2px solid $color1;
 }
-
 
 .navbar-title {
   width: fit-content;
@@ -247,29 +250,26 @@ body {
 }
 
 .navbar-nav {
-  height: 100%
+  height: 100%;
 }
 
 .nav-link {
   align-items: center;
   color: #43e9d6;
-
 }
 
 .active {
   font-weight: bolder;
 }
 
-
 .active > .page-link {
   border-bottom: 4px solid $color2;
 }
 
-
 .navbar-brand-text {
   color: $color1;
   text-decoration: none;
-  font-family: 'Righteous';
+  font-family: "Righteous";
   font-size: 2rem;
   font-weight: bold;
   line-height: 2rem;
@@ -280,7 +280,6 @@ body {
     font-size: 1.4rem;
   }
 }
-
 
 .navbar-brand-text a:link {
   text-decoration: none;
@@ -299,13 +298,12 @@ body {
   text-decoration: none;
 }
 
-.navbar-brand-text>a {
+.navbar-brand-text > a {
   text-decoration: none;
   font-style: none;
-
 }
 
-.colsize>div {
+.colsize > div {
   max-width: 1400px;
 }
 
@@ -328,7 +326,7 @@ body {
 
 @include media-breakpoint-up(sm) {
   .secondRow {
-    padding: 3rem
+    padding: 3rem;
   }
 }
 
@@ -337,7 +335,6 @@ body {
 }
 
 .thirdRow {
-
   padding: 10rem;
 }
 
@@ -348,11 +345,9 @@ body {
 
 @include media-breakpoint-up(sm) {
   .fourthRow {
-    padding: 3rem
+    padding: 3rem;
   }
 }
-
-
 
 .cardText {
   font-size: 2em;
@@ -365,7 +360,9 @@ body {
 }
 
 .navbar-title {
-  font: bold 20px/1.2em anton, sans-serif;
+  font:
+    bold 20px/1.2em anton,
+    sans-serif;
 }
 
 .block-overview {
@@ -399,7 +396,7 @@ body {
 }
 
 .hide-button-active {
-  color: $color2
+  color: $color2;
 }
 
 .block-overview-content {
@@ -448,7 +445,6 @@ body {
   // table-layout: auto !important;
   // width: 100%;
   color: $color5;
-
 }
 
 @keyframes anim {
@@ -473,7 +469,6 @@ body {
     font-size: x-small;
     padding: 0.7rem 0.5rem;
   }
-  
 
   .styled-table thead th {
     font-size: x-small;
@@ -485,7 +480,6 @@ body {
   .styled-table td {
     font-size: medium;
   }
-  
 
   .styled-table thead th {
     font-size: medium;
@@ -495,7 +489,6 @@ body {
 .styled-table thead tr {
   border-bottom: 2px solid $color3;
 }
-
 
 .styled-table tbody tr {
   border-bottom: 1px solid $color3;
@@ -519,14 +512,11 @@ body {
 .blockinfo-content {
   display: flex;
   flex-direction: column;
-  ;
   justify-content: center;
 }
 
-
-
 .blockinfo-row:nth-of-type(even) {
-  background-color: rgba($superdark, 0.4)
+  background-color: rgba($superdark, 0.4);
 }
 
 // .blockinfo-table tr:nth-of-type(even) {
@@ -536,8 +526,6 @@ body {
 .icon {
   // width: 10px;
 }
-
-
 
 .cardBox {
   color: #f3eef1;
@@ -563,19 +551,14 @@ body {
 
 .cardBox:hover .cardLight {
   box-shadow: 0px 0px 130px 45px $color2;
-
 }
 
-
-
 .cardBoxElement {
-  font-family: 'Rubik';
+  font-family: "Rubik";
   padding-right: 1rem;
   text-transform: none;
   font-size: 1.2rem;
 }
-
-
 
 .blockDagVis {
   display: flex;
@@ -619,7 +602,6 @@ body {
 #search-box-high {
   max-width: 40rem;
 }
-
 
 @keyframes spinIcon {
   from {
@@ -696,7 +678,6 @@ body {
     font-size: 1rem;
   }
 }
-
 
 @import "./components/blockinfo.scss";
 @import "./components/addressinfo.scss";
