@@ -15,6 +15,11 @@ import PriceContext from "./PriceContext.js";
 import { kgiAddress } from "../addresses";
 
 const BlockLamp = (props) => {
+    console.log("here", props.isBlue)
+    if (props.isBlue === "none") {
+        return <></>
+    }
+
     return <OverlayTrigger overlay={<Tooltip>It is a {props.isBlue ? "blue" : "red"} block!</Tooltip>}>
         <div className={`ms-3 block-lamp-${props.isBlue ? "blue" : "red"}`} />
     </OverlayTrigger>
@@ -85,10 +90,15 @@ const BlockInfo = () => {
                 }
             }
 
-            isBlueBlock([...(blockInfo.verboseData.childrenHashes || [])])
-                .then((res) => setIsBlueBlock(res))
-                .catch((err) => console.log("ERROR", err))
-
+            if (!blockInfo.verboseData.childrenHashes) {
+                console.log("heeeere")
+                setIsBlueBlock("none")
+            } else {
+                console.log("everything ok")
+                isBlueBlock([...(blockInfo.verboseData.childrenHashes || [])])
+                    .then((res) => setIsBlueBlock(res))
+                    .catch((err) => console.log("ERROR", err))
+            }
 
             let [address, miner] = ["No miner info", "No miner info"]
 
