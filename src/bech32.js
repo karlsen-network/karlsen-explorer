@@ -76,7 +76,7 @@ export const parsePayload = (payload) => {
   let version = buffer[16];
   const length = buffer[18];
   let script = buffer.slice(19, 19 + length);
-  if (script[0] == 0xaa) {
+  if (script[0] === 0xaa) {
     version = 8;
     script = script.slice(1, script.length);
   }

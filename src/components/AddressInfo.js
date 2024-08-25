@@ -32,7 +32,6 @@ import {
   getTransactions,
   getTransactionsFromAddress,
 } from "../karlsen-api-client.js";
-import { FaQrcode } from "react-icons/fa";
 import BlueScoreContext from "./BlueScoreContext";
 import CopyButton from "./CopyButton.js";
 import PriceContext from "./PriceContext.js";
@@ -70,7 +69,7 @@ const AddressInfo = () => {
   const [showQr, setShowQr] = useState(false);
 
   const [detailedView, setDetailedView] = useState(
-    localStorage.getItem("detailedView") == "true",
+    localStorage.getItem("detailedView") === "true",
   );
 
   const [utxos, setUtxos] = useState([]);
@@ -115,14 +114,14 @@ const AddressInfo = () => {
 
   const getAddrFromOutputs = (outputs, i) => {
     for (const o of outputs) {
-      if (o.index == i) {
+      if (o.index === i) {
         return o.script_public_key_address;
       }
     }
   };
   const getAmountFromOutputs = (outputs, i) => {
     for (const o of outputs) {
-      if (o.index == i) {
+      if (o.index === i) {
         return o.amount / 100000000;
       }
     }
@@ -131,7 +130,7 @@ const AddressInfo = () => {
   const getAmount = (outputs, inputs) => {
     var balance = 0;
     for (const o of outputs || []) {
-      if (o.script_public_key_address == addr) {
+      if (o.script_public_key_address === addr) {
         balance = balance + o.amount / 100000000;
       }
     }
@@ -140,7 +139,7 @@ const AddressInfo = () => {
         getAddrFromOutputs(
           txsInpCache[i.previous_outpoint_hash]?.outputs || [],
           i.previous_outpoint_index,
-        ) == addr
+        ) === addr
       ) {
         balance =
           balance -
@@ -152,6 +151,44 @@ const AddressInfo = () => {
     }
     return balance;
   };
+
+  const loadTransactionsToShow = useCallback((addr, limit, offset) => {
+    function removeDuplicates(arr) {
+      return arr.filter((item, index) => arr.indexOf(item) === index);
+    }
+  
+    setLoadingTxs(true);
+    getTransactionsFromAddress(addr, limit, offset)
+      .then((res) => {
+        setTxs(res);
+        if (res.length === 0) {
+          // page was too high. Set page 1
+          setActiveTx(1);
+          setLoadingTxs(false);
+          return;
+        }
+        console.log("loading done.");
+        setLoadingTxs(false);
+  
+        getTransactions(
+          removeDuplicates(
+            res
+              .map((item) => item.inputs)
+              .flatMap((x) => x)
+              .map((x) => x.previous_outpoint_hash),
+          ),
+        ).then((txs) => {
+          var txInpObj = {};
+          txs.forEach((x) => (txInpObj[x.transaction_id] = x));
+          console.log(txInpObj);
+          setTxsInpCache(txInpObj);
+        });
+      })
+      .catch((ex) => {
+        console.log("nicht eroflgreich", ex);
+        setLoadingTxs(false);
+      });
+  }, [setLoadingTxs, setTxs, setTxsInpCache, setActiveTx]);  
 
   useEffect(() => {
     const qrCode = new QRCodeStyling({
@@ -201,7 +238,7 @@ const AddressInfo = () => {
         setCurrentDaaScore(parseInt(block.header.daaScore));
       });
     });
-  }, []);
+  }, [addr]);
 
   useEffect(() => {
     localStorage.setItem("detailedView", detailedView);
@@ -228,45 +265,7 @@ const AddressInfo = () => {
     window.scrollTo(0, 0);
     if (prevActiveTx !== undefined)
       loadTransactionsToShow(addr, limit, (activeTx - 1) * 20);
-  }, [activeTx, limit]);
-
-  function removeDuplicates(arr) {
-    return arr.filter((item, index) => arr.indexOf(item) === index);
-  }
-
-  const loadTransactionsToShow = (addr, limit, offset) => {
-    setLoadingTxs(true);
-    getTransactionsFromAddress(addr, limit, offset)
-      .then((res) => {
-        setTxs(res);
-        if (res.length === 0) {
-          // page was too high. Set page 1
-          setActiveTx(1);
-          setLoadingTxs(false);
-          return;
-        }
-        console.log("loading done.");
-        setLoadingTxs(false);
-
-        getTransactions(
-          removeDuplicates(
-            res
-              .map((item) => item.inputs)
-              .flatMap((x) => x)
-              .map((x) => x.previous_outpoint_hash),
-          ),
-        ).then((txs) => {
-          var txInpObj = {};
-          txs.forEach((x) => (txInpObj[x.transaction_id] = x));
-          console.log(txInpObj);
-          setTxsInpCache(txInpObj);
-        });
-      })
-      .catch((ex) => {
-        console.log("nicht eroflgreich", ex);
-        setLoadingTxs(false);
-      });
-  };
+  }, [addr, loadTransactionsToShow, prevActiveTx, setSearch, activeTx, limit]);
 
   useEffect(() => {
     if (view === "transactions") {
@@ -283,25 +282,7 @@ const AddressInfo = () => {
     if (view === "utxos") {
       setLimit("20");
     }
-  }, [view, limit]);
-
-  //     <div className="blockinfo-content">
-  //     <div className="blockinfo-header"><h3>Details for {addr}</h3></div>
-  //     <table className="blockinfo-table">
-  //         <tr className="trow">
-  //             <td>Balance</td>
-  //             <td>{addressBalance/100000000} KLS</td>
-  //         </tr>
-  //         <tr>
-  //             <td>UTXOs</td>
-  //             <td>{utxos ? <ul>
-  //                 {utxos
-  //                 .sort((a,b) => {return b.utxoEntry.blockDaaScore - a.utxoEntry.blockDaaScore})
-  //                 .map(x => <li>{x.utxoEntry.amount/100000000} KLS ({x.outpoint.transactionId})</li>)}
-  //             </ul> : <>Loading UTXOs <Spinner animation="border" role="status" /></>}</td>
-  //         </tr>
-  //     </table>
-  // </div> : <>Loading Address info <Spinner animation="border" role="status" /></>}
+  }, [view, limit, activeTx, addr, loadTransactionsToShow]);
 
   const handleLimit = (event) => {
     setLimit(event.target.value);
@@ -324,7 +305,7 @@ const AddressInfo = () => {
     if (view === "utxos" && utxos.length) {
       convertJsonToCSV(utxos);
     }
-  }, [view, txs, utxos]);
+  }, [view, txs, utxos, convertJsonToCSV]);
 
   const fileName = useMemo(
     () => getFileName(view, limit, addr, utxos.length),
@@ -451,7 +432,7 @@ const AddressInfo = () => {
         </Row>
       </Container>
 
-      {view == "transactions" && (
+      {view === "transactions" && (
         <Container className="webpage addressinfo-box mt-4" fluid>
           <Row className="border-bottom border-bottom-1">
             <Col xs={6} className="d-flex flex-row align-items-center">
@@ -461,7 +442,7 @@ const AddressInfo = () => {
               <div className="ms-auto d-flex flex-row align-items-center">
                 <Toggle
                   defaultChecked={
-                    localStorage.getItem("detailedView") == "true"
+                    localStorage.getItem("detailedView") === "true"
                   }
                   size={"1px"}
                   icons={false}
@@ -582,7 +563,7 @@ const AddressInfo = () => {
                                                   x.previous_outpoint_hash
                                                 ]["outputs"],
                                                 x.previous_outpoint_index,
-                                              ) == addr
+                                              ) === addr
                                                 ? "highlight-addr"
                                                 : ""
                                             }
@@ -642,7 +623,7 @@ const AddressInfo = () => {
                                 >
                                   <span
                                     className={
-                                      x.script_public_key_address == addr
+                                      x.script_public_key_address === addr
                                         ? "highlight-addr"
                                         : ""
                                     }
@@ -734,17 +715,15 @@ const AddressInfo = () => {
                     total={Math.ceil(txCount / limit)}
                     setActive={setActiveTx}
                   />
-                  {/* </> : <Spinner className="m-3" animation="border" variant="primary" />} */}
                 </Col>
               </Row>
-              //{" "}
             </>
           ) : (
             <Spinner className="m-3" animation="border" variant="primary" />
           )}
         </Container>
       )}
-      {view == "utxos" && (
+      {view === "utxos" && (
         <Container className="webpage addressinfo-box mt-4" fluid>
           <Row className="border-bottom border-bottom-1">
             <Col xs={1}>

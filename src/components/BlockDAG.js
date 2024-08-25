@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { getBlockdagInfo } from "../karlsen-api-client";
 
 const BlockDAGBox = () => {
-  const [data, setData] = useState({});
-  const [isConnected, setIsConnected] = useState(false);
 
   const [networkName, setNetworkName] = useState("");
   const [blockCount, setBlockCount] = useState();

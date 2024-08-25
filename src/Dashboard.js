@@ -27,12 +27,11 @@ function Dashboard() {
   const navigate = useNavigate();
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   const [showLoadingModal, setShowLoadingModal] = useState(false);
 
-  const [balance, setBalance] = useState(0);
-  const [address, setAddress] = useState("karlsen:");
+  const balance = useState(0);
+  const address = useState("karlsen:");
 
   const search = (e) => {
     e.preventDefault();
@@ -40,10 +39,10 @@ function Dashboard() {
 
     setShowLoadingModal(true);
 
-    if (v.length == 64) {
+    if (v.length === 64) {
       getBlock(v)
         .then((data) => {
-          if (data.detail == "Block not found") {
+          if (data.detail === "Block not found") {
             navigate(`/txs/${v}`);
           } else {
             navigate(`/blocks/${v}`);
@@ -79,7 +78,7 @@ function Dashboard() {
               md={12}
               className="d-flex flex-row justify-content-start text-light d-xs-none align-items-center"
             >
-              <img className="big-karlsen-icon" src="/k-icon-glow.png" />
+              <img className="big-karlsen-icon" src="/k-icon-glow.png" alt="Karlsen Logo" />
               <div className="bigfont">
                 KARLSEN
                 <br />

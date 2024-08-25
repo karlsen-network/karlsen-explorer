@@ -1,10 +1,9 @@
 import { faCoins } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moment from "moment";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { numberWithCommas } from "../helper";
 import { getCoinSupply, getHalving } from "../karlsen-api-client";
-import PriceContext from "./PriceContext";
 import { apiAddress } from "../addresses";
 
 const CBox = () => {
@@ -13,7 +12,7 @@ const CBox = () => {
   const [halvingDate, setHalvingDate] = useState("-");
   const [halvingAmount, setHalvingAmount] = useState("-");
 
-  const initBox = async () => {
+  const initBox = useCallback(async () => {
     const coinSupplyResp = await getCoinSupply();
     getBlockReward();
 
@@ -25,7 +24,7 @@ const CBox = () => {
     });
 
     setCircCoins(Math.round(coinSupplyResp.circulatingSupply / 100000000));
-  };
+  }, []);
 
   useEffect(() => {
     initBox();
@@ -35,10 +34,10 @@ const CBox = () => {
       setCircCoins(Math.round(coinSupplyResp.circulatingSupply / 100000000));
     }, 10000);
 
-    return async () => {
+    return () => {
       clearInterval(updateCircCoins);
     };
-  }, []);
+  }, [initBox]);
 
   async function getBlockReward() {
     await fetch(`https://${apiAddress}/info/blockreward`)
@@ -70,7 +69,7 @@ const CBox = () => {
         <table style={{ fontSize: "1rem" }}>
           <tr>
             <td
-              colspan="2"
+              colSpan="2"
               className="text-center"
               style={{ fontSize: "4rem" }}
             >
@@ -79,7 +78,7 @@ const CBox = () => {
             </td>
           </tr>
           <tr>
-            <td colspan="2" className="text-center">
+            <td colSpan="2" className="text-center">
               <h3>Coin supply</h3>
             </td>
           </tr>

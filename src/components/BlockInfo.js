@@ -40,14 +40,14 @@ const BlockLamp = (props) => {
 
 const getAddrFromOutputs = (outputs, i) => {
   for (const o of outputs) {
-    if (o.index == i) {
+    if (o.index === i) {
       return o.script_public_key_address;
     }
   }
 };
 const getAmountFromOutputs = (outputs, i) => {
   for (const o of outputs) {
-    if (o.index == i) {
+    if (o.index === i) {
       return o.amount / 100000000;
     }
   }
@@ -64,7 +64,6 @@ const BlockInfo = () => {
   const [error, setError] = useState(false);
   const { price } = useContext(PriceContext);
 
-  const [blockColor, setBlockColor] = useState();
 
   useEffect(() => {
     setError(false);
@@ -459,7 +458,7 @@ const BlockInfo = () => {
                                         <a
                                           className="blockinfo-link"
                                           href={`/txs/${txInput.previousOutpoint.transactionId}`}
-                                          target="_blank"
+                                          target="_blank" rel="noreferrer"
                                         >
                                           TX #
                                           {txInput.previousOutpoint.index || 0}{" "}

@@ -3,18 +3,8 @@ import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import { BiCopy } from "react-icons/bi";
 import { FaCheck } from "react-icons/fa";
 
-export default (props) => {
+const CopyButton = (props) => {
   const [justCopied, setJustCopied] = useState(false);
-
-  // useEffect(() => {
-  //     document.getElementById('coins').animate([
-  //         // keyframes
-  //         { transform: 'rotate(0.5turn)'}
-  //       ], {
-  //         // timing options
-  //         duration: 300
-  //       });
-  // }, [justCopied])
 
   const handleOnClick = (e) => {
     setJustCopied(true);
@@ -48,3 +38,5 @@ export default (props) => {
     );
   }
 };
+
+export default CopyButton;

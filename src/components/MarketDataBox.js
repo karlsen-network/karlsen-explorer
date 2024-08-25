@@ -7,7 +7,6 @@ import PriceContext from "./PriceContext";
 
 const MarketDataBox = () => {
   const [circCoinsMData, setCircCoinsMData] = useState("-");
-  const [isConnected, setIsConnected] = useState(false);
   const { price, marketData } = useContext(PriceContext);
 
   const initBox = async () => {
@@ -111,7 +110,7 @@ const MarketDataBox = () => {
               <a
                 href="https://www.coingecko.com/en/coins/karlsen"
                 target="_blank"
-                className="rank ms-1"
+                className="rank ms-1" rel="noreferrer"
               >
                 Rank #{marketData?.market_cap_rank}
               </a>
