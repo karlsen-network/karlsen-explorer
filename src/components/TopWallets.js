@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Spinner, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FaWallet } from "react-icons/fa";
+import { apiAddress } from "../addresses";
 
 const TopWallets = () => {
   const [wallets, setWallets] = useState([]);
@@ -16,23 +17,21 @@ const TopWallets = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const apiBaseUrl = process.env.REACT_APP_API_ADDRESS;
-
     const fetchData = async () => {
       try {
-        const walletsResponse = await fetch(`${apiBaseUrl}/analytics/addresses/top?limit=10000&offset=0`);
+        const walletsResponse = await fetch(`https://${apiAddress}/analytics/addresses/top?limit=10000&offset=0`);
         const walletsData = await walletsResponse.json();
         setWallets(walletsData.top_addresses.sort((a, b) => b.amount - a.amount));
 
-        const totalAddressesResponse = await fetch(`${apiBaseUrl}/analytics/addresses/total`);
+        const totalAddressesResponse = await fetch(`https://${apiAddress}/analytics/addresses/total`);
         const totalAddressesData = await totalAddressesResponse.json();
         setTotalAddresses(totalAddressesData.total_addresses);
 
         const fetchDistributions = [
-          fetch(`${apiBaseUrl}/analytics/addresses/distribution?min_amount=1000000&max_amount=-1`).then(res => res.json()),
-          fetch(`${apiBaseUrl}/analytics/addresses/distribution?min_amount=100000&max_amount=-1`).then(res => res.json()),
-          fetch(`${apiBaseUrl}/analytics/addresses/distribution?min_amount=10000&max_amount=-1`).then(res => res.json()),
-          fetch(`${apiBaseUrl}/analytics/addresses/distribution?min_amount=1000&max_amount=-1`).then(res => res.json()),
+          fetch(`https://${apiAddress}/analytics/addresses/distribution?min_amount=1000000&max_amount=-1`).then(res => res.json()),
+          fetch(`https://${apiAddress}/analytics/addresses/distribution?min_amount=100000&max_amount=-1`).then(res => res.json()),
+          fetch(`https://${apiAddress}/analytics/addresses/distribution?min_amount=10000&max_amount=-1`).then(res => res.json()),
+          fetch(`https://${apiAddress}/analytics/addresses/distribution?min_amount=1000&max_amount=-1`).then(res => res.json()),
         ];
 
         const [moreThan1M, moreThan100k, moreThan10k, moreThan1k] = await Promise.all(fetchDistributions);
