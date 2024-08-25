@@ -588,10 +588,9 @@ body {
 
 .hashh {
   white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  // max-width:1px;
-  max-width: 1px;
+  text-overflow: unset;
+  overflow: visible;
+  max-width: none;
 }
 
 .klsBlockHeader {
