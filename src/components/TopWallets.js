@@ -134,7 +134,7 @@ const TopWallets = () => {
                       <tr key={wallet.address}>
                         <td>{index + 1}</td>
                         <td>{wallet.amount}&nbsp;KLS</td>
-                        <td className="hashh">
+                        <td className="topwallets">
                           <Link
                             to={`/addresses/${wallet.address}`}
                             className="blockinfo-link"
