@@ -31,7 +31,7 @@ import PriceContext from "./components/PriceContext";
 import TransactionInfo from "./components/TransactionInfo";
 import TxPage from "./components/TxPage";
 import Dashboard from "./Dashboard";
-import TopWallets from './components/TopWallets';
+import TopWallets from "./components/TopWallets";
 import { getBlock } from "./karlsen-api-client";
 import { apiAddress } from "./addresses";
 

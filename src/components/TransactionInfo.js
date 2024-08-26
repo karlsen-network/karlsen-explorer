@@ -1,18 +1,10 @@
 import moment from "moment";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import {
-  Col,
-  Container,
-  Row,
-  Spinner,
-} from "react-bootstrap";
+import { Col, Container, Row, Spinner } from "react-bootstrap";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { numberWithCommas } from "../helper.js";
-import {
-  getTransaction,
-  getTransactions,
-} from "../karlsen-api-client.js";
+import { getTransaction, getTransactions } from "../karlsen-api-client.js";
 import BlueScoreContext from "./BlueScoreContext.js";
 import CopyButton from "./CopyButton.js";
 
@@ -274,7 +266,10 @@ const TransactionInfo = () => {
                 </div>
                 <Container className="webpage utxo-box" fluid>
                   {(txInfo.inputs || []).map((tx_input) => (
-                    <Row key={tx_input.previous_outpoint_hash} className="utxo-border py-3">
+                    <Row
+                      key={tx_input.previous_outpoint_hash}
+                      className="utxo-border py-3"
+                    >
                       <Col sm={6} md={6} lg={2}>
                         <div className="blockinfo-key mt-0 mt-md-2">
                           Signature Op Count
@@ -322,9 +317,7 @@ const TransactionInfo = () => {
                         additionalTxInfo[tx_input.previous_outpoint_hash] && (
                           <>
                             <Col sm={12} md={12} lg={12}>
-                              <div className="blockinfo-key mt-2">
-                                Address
-                              </div>
+                              <div className="blockinfo-key mt-2">Address</div>
                               <div className="utxo-value-mono">
                                 <Link
                                   to={`/addresses/${

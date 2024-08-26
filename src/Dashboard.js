@@ -78,7 +78,11 @@ function Dashboard() {
               md={12}
               className="d-flex flex-row justify-content-start text-light d-xs-none align-items-center"
             >
-              <img className="big-karlsen-icon" src="/k-icon-glow.png" alt="Karlsen Logo" />
+              <img
+                className="big-karlsen-icon"
+                src="/k-icon-glow.png"
+                alt="Karlsen Logo"
+              />
               <div className="bigfont">
                 KARLSEN
                 <br />

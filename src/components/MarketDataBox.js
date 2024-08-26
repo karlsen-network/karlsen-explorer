@@ -110,7 +110,8 @@ const MarketDataBox = () => {
               <a
                 href="https://www.coingecko.com/en/coins/karlsen"
                 target="_blank"
-                className="rank ms-1" rel="noreferrer"
+                className="rank ms-1"
+                rel="noreferrer"
               >
                 Rank #{marketData?.market_cap_rank}
               </a>

@@ -25,11 +25,7 @@ const KarlsendInfoBox = () => {
     <div className="cardBox mx-0">
       <table>
         <tr>
-          <td
-            colSpan="2"
-            className="text-center"
-            style={{ fontSize: "4rem" }}
-          >
+          <td colSpan="2" className="text-center" style={{ fontSize: "4rem" }}>
             <FontAwesomeIcon icon={faMemory} />
             <div className="cardLight" />
           </td>

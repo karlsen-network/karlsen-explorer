@@ -152,43 +152,46 @@ const AddressInfo = () => {
     return balance;
   };
 
-  const loadTransactionsToShow = useCallback((addr, limit, offset) => {
-    function removeDuplicates(arr) {
-      return arr.filter((item, index) => arr.indexOf(item) === index);
-    }
-  
-    setLoadingTxs(true);
-    getTransactionsFromAddress(addr, limit, offset)
-      .then((res) => {
-        setTxs(res);
-        if (res.length === 0) {
-          // page was too high. Set page 1
-          setActiveTx(1);
+  const loadTransactionsToShow = useCallback(
+    (addr, limit, offset) => {
+      function removeDuplicates(arr) {
+        return arr.filter((item, index) => arr.indexOf(item) === index);
+      }
+
+      setLoadingTxs(true);
+      getTransactionsFromAddress(addr, limit, offset)
+        .then((res) => {
+          setTxs(res);
+          if (res.length === 0) {
+            // page was too high. Set page 1
+            setActiveTx(1);
+            setLoadingTxs(false);
+            return;
+          }
+          console.log("loading done.");
           setLoadingTxs(false);
-          return;
-        }
-        console.log("loading done.");
-        setLoadingTxs(false);
-  
-        getTransactions(
-          removeDuplicates(
-            res
-              .map((item) => item.inputs)
-              .flatMap((x) => x)
-              .map((x) => x.previous_outpoint_hash),
-          ),
-        ).then((txs) => {
-          var txInpObj = {};
-          txs.forEach((x) => (txInpObj[x.transaction_id] = x));
-          console.log(txInpObj);
-          setTxsInpCache(txInpObj);
+
+          getTransactions(
+            removeDuplicates(
+              res
+                .map((item) => item.inputs)
+                .flatMap((x) => x)
+                .map((x) => x.previous_outpoint_hash),
+            ),
+          ).then((txs) => {
+            var txInpObj = {};
+            txs.forEach((x) => (txInpObj[x.transaction_id] = x));
+            console.log(txInpObj);
+            setTxsInpCache(txInpObj);
+          });
+        })
+        .catch((ex) => {
+          console.log("nicht eroflgreich", ex);
+          setLoadingTxs(false);
         });
-      })
-      .catch((ex) => {
-        console.log("nicht eroflgreich", ex);
-        setLoadingTxs(false);
-      });
-  }, [setLoadingTxs, setTxs, setTxsInpCache, setActiveTx]);  
+    },
+    [setLoadingTxs, setTxs, setTxsInpCache, setActiveTx],
+  );
 
   useEffect(() => {
     const qrCode = new QRCodeStyling({

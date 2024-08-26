@@ -64,7 +64,6 @@ const BlockInfo = () => {
   const [error, setError] = useState(false);
   const { price } = useContext(PriceContext);
 
-
   useEffect(() => {
     setError(false);
     getBlock(id)
@@ -458,7 +457,8 @@ const BlockInfo = () => {
                                         <a
                                           className="blockinfo-link"
                                           href={`/txs/${txInput.previousOutpoint.transactionId}`}
-                                          target="_blank" rel="noreferrer"
+                                          target="_blank"
+                                          rel="noreferrer"
                                         >
                                           TX #
                                           {txInput.previousOutpoint.index || 0}{" "}
