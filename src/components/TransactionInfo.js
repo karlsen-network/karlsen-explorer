@@ -1,34 +1,22 @@
 import moment from "moment";
-import { useContext, useEffect, useRef, useState } from "react";
-import {
-  Col,
-  Container,
-  OverlayTrigger,
-  Row,
-  Spinner,
-  Tooltip,
-} from "react-bootstrap";
-import { BiNetworkChart } from "react-icons/bi";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Col, Container, Row, Spinner } from "react-bootstrap";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { parsePayload } from "../bech32.js";
 import { numberWithCommas } from "../helper.js";
-import {
-  getBlock,
-  getTransaction,
-  getTransactions,
-} from "../karlsen-api-client.js";
+import { getTransaction, getTransactions } from "../karlsen-api-client.js";
 import BlueScoreContext from "./BlueScoreContext.js";
 import CopyButton from "./CopyButton.js";
-import PriceContext from "./PriceContext.js";
 
 const getOutputFromIndex = (outputs, index) => {
-  console.log(outputs);
+  const numIndex = Number(index); // Convert index to a number
   for (const output of outputs) {
-    if (output.index == index) {
+    if (Number(output.index) === numIndex) {
+      // Compare as numbers
       return output;
     }
   }
+  return null; // Return null if no match found
 };
 
 const TransactionInfo = () => {
@@ -36,17 +24,13 @@ const TransactionInfo = () => {
   const [txInfo, setTxInfo] = useState();
   const [additionalTxInfo, setAdditionalTxInfo] = useState();
   const [showTxFee, setShowTxFee] = useState(false);
-  const [error, setError] = useState(false);
-  const { price } = useContext(PriceContext);
-
+  const [, setError] = useState(false);
   const retryCnt = useRef(0);
   const retryNotAccepted = useRef(6);
   const { blueScore } = useContext(BlueScoreContext);
 
-  const [blockColor, setBlockColor] = useState();
-
-  const getTx = () =>
-    getTransaction(id)
+  const getTx = useCallback(() => {
+    return getTransaction(id)
       .then((res) => {
         setTxInfo(res);
       })
@@ -55,52 +39,39 @@ const TransactionInfo = () => {
         setTxInfo(undefined);
         throw err;
       });
+  }, [id]);
 
   useEffect(() => {
     setError(false);
     getTx();
-  }, [id]);
-
-  const getAmountFromOutputs = (outputs, i) => {
-    for (const o of outputs) {
-      if (o.index == i) {
-        return o.amount / 100000000;
-      }
-    }
-  };
+  }, [getTx]);
 
   useEffect(() => {
-    // request TX input addresses
     if (!!txInfo && txInfo?.detail !== "Transaction not found") {
       const txToQuery = txInfo.inputs
         ?.flatMap((txInput) => txInput.previous_outpoint_hash)
         .filter((x) => x);
-      console.log("q", txToQuery);
       if (!!txToQuery) {
         getTransactions(txToQuery, true, true)
           .then((resp) => {
-            console.log("Check all tx? ", txToQuery.length == resp.length);
-            setShowTxFee(txToQuery.length == resp.length);
+            setShowTxFee(txToQuery.length === resp.length);
             const respAsObj = resp.reduce((obj, cur) => {
               obj[cur["transaction_id"]] = cur;
               return obj;
             }, {});
-            console.log("additional info", respAsObj);
             setAdditionalTxInfo(respAsObj);
           })
           .catch((err) => console.log("Error ", err));
       }
     }
-    if (txInfo?.detail == "Transaction not found") {
+    if (txInfo?.detail === "Transaction not found") {
       retryCnt.current += 1;
       if (retryCnt.current < 20) {
         setTimeout(getTx, 1000);
-        console.log("retry", retryCnt);
       }
     }
 
     const timeDiff = (Date.now() - (txInfo?.block_time || Date.now())) / 1000;
-    console.log("time diff", timeDiff);
 
     if (
       txInfo?.is_accepted === false &&
@@ -110,7 +81,7 @@ const TransactionInfo = () => {
       retryNotAccepted.current -= 1;
       setTimeout(getTx, 2000);
     }
-  }, [txInfo]);
+  }, [txInfo, getTx]);
 
   return (
     <div className="blockinfo-page">
@@ -165,7 +136,7 @@ const TransactionInfo = () => {
                     <Col className="blockinfo-value-mono" lg={10}>
                       <ul>
                         {txInfo.block_hash?.map((x) => (
-                          <li>
+                          <li key={x}>
                             <Link
                               to={`/blocks/${x}`}
                               className="blockinfo-link"
@@ -281,6 +252,7 @@ const TransactionInfo = () => {
             )}
           </Col>
         </Row>
+
         <Row>
           <Col>
             {!!txInfo && txInfo?.detail !== "Transaction not found" ? (
@@ -290,85 +262,87 @@ const TransactionInfo = () => {
                 </div>
                 <Container className="webpage utxo-box" fluid>
                   {(txInfo.inputs || []).map((tx_input) => (
-                    <>
-                      <Row className="utxo-border py-3">
-                        <Col sm={6} md={6} lg={2}>
-                          <div className="blockinfo-key mt-0 mt-md-2">
-                            Signature Op Count
-                          </div>
-                          <div className="utxo-value-mono">
-                            {tx_input.sig_op_count}
-                          </div>
-                        </Col>
-                        <Col sm={12} md={12} lg={7}>
-                          <div className="blockinfo-key mt-2">
-                            Signature Script
-                          </div>
-                          <div className="utxo-value-mono">
-                            {tx_input.signature_script}
-                          </div>
-                        </Col>
-                        {!!additionalTxInfo &&
-                          additionalTxInfo[tx_input.previous_outpoint_hash] && (
-                            <Col sm={12} md={12} lg={3}>
-                              <div className="blockinfo-key mt-2">Amount</div>
-                              <div className="utxo-value">
-                                <span className="utxo-amount-minus">
-                                  -
-                                  {getOutputFromIndex(
-                                    additionalTxInfo[
-                                      tx_input.previous_outpoint_hash
-                                    ].outputs,
-                                    tx_input.previous_outpoint_index,
-                                  ).amount / 100000000}
-                                  &nbsp;KLS
-                                </span>
+                    <Row
+                      key={
+                        tx_input.previous_outpoint_hash +
+                        tx_input.previous_outpoint_index
+                      }
+                      className="utxo-border py-3"
+                    >
+                      <Col sm={6} md={6} lg={2}>
+                        <div className="blockinfo-key mt-0 mt-md-2">
+                          Signature Op Count
+                        </div>
+                        <div className="utxo-value-mono">
+                          {tx_input.sig_op_count}
+                        </div>
+                      </Col>
+                      <Col sm={12} md={12} lg={7}>
+                        <div className="blockinfo-key mt-2">
+                          Signature Script
+                        </div>
+                        <div className="utxo-value-mono">
+                          {tx_input.signature_script}
+                        </div>
+                      </Col>
+                      {!!additionalTxInfo &&
+                        additionalTxInfo[tx_input.previous_outpoint_hash] && (
+                          <Col sm={12} md={12} lg={3}>
+                            <div className="blockinfo-key mt-2">Amount</div>
+                            <div className="utxo-value">
+                              <span className="utxo-amount-minus">
+                                -
+                                {getOutputFromIndex(
+                                  additionalTxInfo[
+                                    tx_input.previous_outpoint_hash
+                                  ].outputs,
+                                  tx_input.previous_outpoint_index,
+                                ).amount / 100000000}
+                                &nbsp;KLS
+                              </span>
+                            </div>
+                          </Col>
+                        )}
+                      <Col sm={12} md={12} lg={12}>
+                        <div className="blockinfo-key mt-2">
+                          Previous Outpoint Index + Hash
+                        </div>
+                        <div className="utxo-value-mono">
+                          #{tx_input.previous_outpoint_index}{" "}
+                          {tx_input.previous_outpoint_hash}
+                        </div>
+                      </Col>
+                      {additionalTxInfo &&
+                        additionalTxInfo[tx_input.previous_outpoint_hash] && (
+                          <>
+                            <Col sm={12} md={12} lg={12}>
+                              <div className="blockinfo-key mt-2">Address</div>
+                              <div className="utxo-value-mono">
+                                <Link
+                                  to={`/addresses/${
+                                    getOutputFromIndex(
+                                      additionalTxInfo[
+                                        tx_input.previous_outpoint_hash
+                                      ].outputs,
+                                      tx_input.previous_outpoint_index,
+                                    ).script_public_key_address
+                                  }`}
+                                  className="blockinfo-link"
+                                >
+                                  {
+                                    getOutputFromIndex(
+                                      additionalTxInfo[
+                                        tx_input.previous_outpoint_hash
+                                      ].outputs,
+                                      tx_input.previous_outpoint_index,
+                                    ).script_public_key_address
+                                  }
+                                </Link>
                               </div>
                             </Col>
-                          )}
-                        <Col sm={12} md={12} lg={12}>
-                          <div className="blockinfo-key mt-2">
-                            Previous Outpoint Index + Hash
-                          </div>
-                          <div className="utxo-value-mono">
-                            #{tx_input.previous_outpoint_index}{" "}
-                            {tx_input.previous_outpoint_hash}
-                          </div>
-                        </Col>
-                        {additionalTxInfo &&
-                          additionalTxInfo[tx_input.previous_outpoint_hash] && (
-                            <>
-                              <Col sm={12} md={12} lg={12}>
-                                <div className="blockinfo-key mt-2">
-                                  Address
-                                </div>
-                                <div className="utxo-value-mono">
-                                  <Link
-                                    to={`/addresses/${
-                                      getOutputFromIndex(
-                                        additionalTxInfo[
-                                          tx_input.previous_outpoint_hash
-                                        ].outputs,
-                                        tx_input.previous_outpoint_index,
-                                      ).script_public_key_address
-                                    }`}
-                                    className="blockinfo-link"
-                                  >
-                                    {
-                                      getOutputFromIndex(
-                                        additionalTxInfo[
-                                          tx_input.previous_outpoint_hash
-                                        ].outputs,
-                                        tx_input.previous_outpoint_index,
-                                      ).script_public_key_address
-                                    }
-                                  </Link>
-                                </div>
-                              </Col>
-                            </>
-                          )}
-                      </Row>
-                    </>
+                          </>
+                        )}
+                    </Row>
                   ))}
                 </Container>
                 <div className="blockinfo-header mt-5">
@@ -376,7 +350,7 @@ const TransactionInfo = () => {
                 </div>
                 <Container className="webpage utxo-box" fluid>
                   {(txInfo.outputs || []).map((tx_output) => (
-                    <Row className="utxo-border py-3">
+                    <Row key={tx_output.index} className="utxo-border py-3">
                       <Col sm={6} md={6} lg={2}>
                         <div className="blockinfo-key mt-2 mt-lg-0">Index</div>
                         <div className="utxo-value-mono">
