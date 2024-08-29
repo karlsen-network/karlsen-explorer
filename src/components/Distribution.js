@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { FaWallet } from "react-icons/fa";
 import { apiAddress } from "../addresses";
 
-const TopWallets = () => {
+const Distribution = () => {
   const [wallets, setWallets] = useState([]);
   const [totalAddresses, setTotalAddresses] = useState(0);
   const [distributions, setDistributions] = useState({
@@ -77,7 +77,7 @@ const TopWallets = () => {
           <div className="d-flex flex-row w-100">
             <h4 className="block-overview-header text-center w-100 mt-4">
               <FaWallet size="1.7rem" />
-              TOP WALLETS
+              Distribution
             </h4>
           </div>
           <div className="block-overview-content">
@@ -134,7 +134,7 @@ const TopWallets = () => {
                       <tr key={wallet.address}>
                         <td>{index + 1}</td>
                         <td>{wallet.amount}&nbsp;KLS</td>
-                        <td className="topwallets">
+                        <td className="distribution">
                           <Link
                             to={`/addresses/${wallet.address}`}
                             className="blockinfo-link"
@@ -155,4 +155,4 @@ const TopWallets = () => {
   );
 };
 
-export default TopWallets;
+export default Distribution;

@@ -31,7 +31,7 @@ import PriceContext from "./components/PriceContext";
 import TransactionInfo from "./components/TransactionInfo";
 import TxPage from "./components/TxPage";
 import Dashboard from "./Dashboard";
-import TopWallets from "./components/TopWallets";
+import Distribution from "./components/Distribution";
 import { getBlock } from "./karlsen-api-client";
 import { apiAddress } from "./addresses";
 
@@ -229,7 +229,7 @@ function App() {
                         onClick={closeMenuIfNeeded}
                         to={"/wallets"}
                       >
-                        Top Wallet List
+                        Distribution
                       </NavLink>
                     </Nav.Item>
                   </Nav>
@@ -270,7 +270,7 @@ function App() {
               <Route path="/blocks" element={<BlocksPage />} />
               <Route path="/blocks/:id" element={<BlockInfo />} />
               <Route path="/blocks/:id/:txview" element={<BlockInfo />} />
-              <Route path="/wallets" element={<TopWallets />} />
+              <Route path="/wallets" element={<Distribution />} />
               <Route path="/addresses/:addr" element={<AddressInfoPage />} />
               <Route path="/txs" element={<TxPage />} />
               <Route path="/txs/:id" element={<TransactionInfo />} />
