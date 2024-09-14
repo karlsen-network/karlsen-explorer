@@ -10,6 +10,14 @@ const BlockDAGBox = () => {
   const [virtualDaaScore, setVirtualDaaScore] = useState("");
   const [hashrate, setHashrate] = useState("");
 
+  // calculate and assign correct hashrate unit
+  const calculateAndFormatHashrate = (difficulty) => {
+    const hashrateValue = ((difficulty * 2) / 1000000000000).toFixed(2);
+    return parseFloat(hashrateValue) >= 1
+      ? `${hashrateValue} TH/s`
+      : `${(parseFloat(hashrateValue) * 1000).toFixed(2)} GH/s`;
+  };
+
   const initBox = async () => {
     const dag_info = await getBlockdagInfo();
 
@@ -19,7 +27,7 @@ const BlockDAGBox = () => {
     setBlockCount(dag_info.blockCount);
     setHeaderCount(dag_info.headerCount);
     setVirtualDaaScore(dag_info.virtualDaaScore);
-    setHashrate(((dag_info.difficulty * 2) / 1000000000000).toFixed(2));
+    setHashrate(calculateAndFormatHashrate(dag_info.difficulty));
   };
 
   useEffect(() => {
@@ -30,84 +38,42 @@ const BlockDAGBox = () => {
       setBlockCount(dag_info.blockCount);
       setHeaderCount(dag_info.headerCount);
       setVirtualDaaScore(dag_info.virtualDaaScore);
-      setHashrate(((dag_info.difficulty * 2) / 1000000000000).toFixed(2));
+      setHashrate(calculateAndFormatHashrate(dag_info.difficulty));
     }, 60000);
-    return async () => {
-      clearInterval(updateInterval);
-    };
+    return () => clearInterval(updateInterval);
   }, []);
 
-  useEffect(
-    (e) => {
-      document.getElementById("blockCount").animate(
-        [
-          // keyframes
-          { opacity: "1" },
-          { opacity: "0.6" },
-          { opacity: "1" },
-        ],
-        {
-          // timing options
-          duration: 300,
-        },
-      );
-    },
-    [blockCount],
-  );
+  useEffect(() => {
+    document
+      .getElementById("blockCount")
+      .animate([{ opacity: "1" }, { opacity: "0.6" }, { opacity: "1" }], {
+        duration: 300,
+      });
+  }, [blockCount]);
 
-  useEffect(
-    (e) => {
-      document.getElementById("headerCount").animate(
-        [
-          // keyframes
-          { opacity: "1" },
-          { opacity: "0.6" },
-          { opacity: "1" },
-        ],
-        {
-          // timing options
-          duration: 300,
-        },
-      );
-    },
-    [headerCount],
-  );
+  useEffect(() => {
+    document
+      .getElementById("headerCount")
+      .animate([{ opacity: "1" }, { opacity: "0.6" }, { opacity: "1" }], {
+        duration: 300,
+      });
+  }, [headerCount]);
 
-  useEffect(
-    (e) => {
-      document.getElementById("virtualDaaScore").animate(
-        [
-          // keyframes
-          { opacity: "1" },
-          { opacity: "0.6" },
-          { opacity: "1" },
-        ],
-        {
-          // timing options
-          duration: 300,
-        },
-      );
-    },
-    [virtualDaaScore],
-  );
+  useEffect(() => {
+    document
+      .getElementById("virtualDaaScore")
+      .animate([{ opacity: "1" }, { opacity: "0.6" }, { opacity: "1" }], {
+        duration: 300,
+      });
+  }, [virtualDaaScore]);
 
-  useEffect(
-    (e) => {
-      document.getElementById("hashrate").animate(
-        [
-          // keyframes
-          { opacity: "1" },
-          { opacity: "0.6" },
-          { opacity: "1" },
-        ],
-        {
-          // timing options
-          duration: 300,
-        },
-      );
-    },
-    [hashrate],
-  );
+  useEffect(() => {
+    document
+      .getElementById("hashrate")
+      .animate([{ opacity: "1" }, { opacity: "0.6" }, { opacity: "1" }], {
+        duration: 300,
+      });
+  }, [hashrate]);
 
   return (
     <>
@@ -153,7 +119,7 @@ const BlockDAGBox = () => {
           <tr>
             <td className="cardBoxElement">Hashrate</td>
             <td className="pt-1" id="hashrate">
-              {hashrate} TH/s
+              {hashrate}
             </td>
           </tr>
         </table>
