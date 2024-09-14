@@ -227,7 +227,7 @@ function App() {
                       <NavLink
                         className="nav-link fs-5"
                         onClick={closeMenuIfNeeded}
-                        to={"/wallets"}
+                        to={"/distribution"}
                       >
                         Distribution
                       </NavLink>
@@ -270,7 +270,7 @@ function App() {
               <Route path="/blocks" element={<BlocksPage />} />
               <Route path="/blocks/:id" element={<BlockInfo />} />
               <Route path="/blocks/:id/:txview" element={<BlockInfo />} />
-              <Route path="/wallets" element={<Distribution />} />
+              <Route path="/distribution" element={<Distribution />} />
               <Route path="/addresses/:addr" element={<AddressInfoPage />} />
               <Route path="/txs" element={<TxPage />} />
               <Route path="/txs/:id" element={<TransactionInfo />} />
