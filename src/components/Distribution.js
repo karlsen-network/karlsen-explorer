@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { Spinner, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FaWallet } from "react-icons/fa";
-import { apiAddress } from "../addresses";
+import {
+  getTopWallets,
+  getTotalAddresses,
+  getAddressDistribution,
+} from "../karlsen-api-client";
 
 const Distribution = () => {
   const [wallets, setWallets] = useState([]);
@@ -19,45 +23,26 @@ const Distribution = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const walletsResponse = await fetch(
-          `https://${apiAddress}/analytics/addresses/top?limit=10000&offset=0`,
-        );
-        const walletsData = await walletsResponse.json();
-        setWallets(
-          walletsData.top_addresses.sort((a, b) => b.amount - a.amount),
-        );
+        // top wallets
+        const walletsData = await getTopWallets();
+        setWallets(walletsData.sort((a, b) => b.amount - a.amount));
 
-        const totalAddressesResponse = await fetch(
-          `https://${apiAddress}/analytics/addresses/total`,
-        );
-        const totalAddressesData = await totalAddressesResponse.json();
-        setTotalAddresses(totalAddressesData.total_addresses);
+        // total number of addresses
+        const totalAddressesCount = await getTotalAddresses();
+        setTotalAddresses(totalAddressesCount);
 
-        const fetchDistributions = [
-          fetch(
-            `https://${apiAddress}/analytics/addresses/distribution?min_amount=1000000&max_amount=-1`,
-          ).then((res) => res.json()),
-          fetch(
-            `https://${apiAddress}/analytics/addresses/distribution?min_amount=100000&max_amount=-1`,
-          ).then((res) => res.json()),
-          fetch(
-            `https://${apiAddress}/analytics/addresses/distribution?min_amount=10000&max_amount=-1`,
-          ).then((res) => res.json()),
-          fetch(
-            `https://${apiAddress}/analytics/addresses/distribution?min_amount=1000&max_amount=-1`,
-          ).then((res) => res.json()),
-        ];
-
-        const [moreThan1M, moreThan100k, moreThan10k, moreThan1k] =
-          await Promise.all(fetchDistributions);
-        const others =
-          totalAddressesData.total_addresses - moreThan1k.from_addresses_total;
+        // distribution data
+        const moreThan1M = await getAddressDistribution(1000000);
+        const moreThan100k = await getAddressDistribution(100000);
+        const moreThan10k = await getAddressDistribution(10000);
+        const moreThan1k = await getAddressDistribution(1000);
+        const others = totalAddressesCount - moreThan1k;
 
         setDistributions({
-          moreThan1M: moreThan1M.from_addresses_total,
-          moreThan100k: moreThan100k.from_addresses_total,
-          moreThan10k: moreThan10k.from_addresses_total,
-          moreThan1k: moreThan1k.from_addresses_total,
+          moreThan1M,
+          moreThan100k,
+          moreThan10k,
+          moreThan1k,
           others,
         });
 
