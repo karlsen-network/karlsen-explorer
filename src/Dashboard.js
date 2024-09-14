@@ -17,7 +17,6 @@ import BalanceModal from "./components/BalanceModal";
 import BlockDAGBox from "./components/BlockDAG";
 import BlockOverview from "./components/BlockOverview";
 import CoinsupplyBox from "./components/CoinsupplyBox";
-import KarlsendInfoBox from "./components/KarlsendInfoBox";
 import MarketDataBox from "./components/MarketDataBox";
 import TxOverview from "./components/TxOverview";
 import { getBlock } from "./karlsen-api-client";
@@ -116,22 +115,17 @@ function Dashboard() {
       <div className="row2">
         <Container className="secondRow webpage" fluid>
           <Row>
-            <Col sm={12} md={6} xl={3}>
+            <Col sm={12} md={6} xl={4}>
               <div className="infoBox">
                 <CoinsupplyBox />
               </div>
             </Col>
-            <Col sm={12} md={6} xl={3}>
+            <Col sm={12} md={6} xl={4}>
               <div className="infoBox">
                 <BlockDAGBox />
               </div>
             </Col>
-            <Col sm={12} md={6} xl={3}>
-              <div className="infoBox">
-                <KarlsendInfoBox />
-              </div>
-            </Col>
-            <Col sm={12} md={6} xl={3}>
+            <Col sm={12} md={6} xl={4}>
               <div className="infoBox">
                 <MarketDataBox />
               </div>
