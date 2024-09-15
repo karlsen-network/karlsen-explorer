@@ -69,22 +69,22 @@ const Distribution = () => {
 
   const chartData = [
     {
-      title: "> 1M coins",
+      title: "> 1M KLS",
       value: (distributions.moreThan1M / totalForChart) * 100,
       color: "#213A53",
     },
     {
-      title: "> 100K coins",
+      title: "> 100K KLS",
       value: (distributions.moreThan100k / totalForChart) * 100,
       color: "#66788A",
     },
     {
-      title: "> 10K coins",
+      title: "> 10K KLS",
       value: (distributions.moreThan10k / totalForChart) * 100,
       color: "#8492A2",
     },
     {
-      title: "> 1K coins",
+      title: "> 1K KLS",
       value: (distributions.moreThan1k / totalForChart) * 100,
       color: "#8C9BA8",
     },
@@ -124,19 +124,19 @@ const Distribution = () => {
                   </thead>
                   <tbody>
                     <tr>
-                      <td>{">"}1M coins</td>
+                      <td>{">"}1M KLS</td>
                       <td align="left">{distributions.moreThan1M}</td>
                     </tr>
                     <tr>
-                      <td>{">"}100k coins</td>
+                      <td>{">"}100k KLS</td>
                       <td align="left">{distributions.moreThan100k}</td>
                     </tr>
                     <tr>
-                      <td>{">"}10k coins</td>
+                      <td>{">"}10k KLS</td>
                       <td align="left">{distributions.moreThan10k}</td>
                     </tr>
                     <tr>
-                      <td>{">"}1k coins</td>
+                      <td>{">"}1k KLS</td>
                       <td align="left">{distributions.moreThan1k}</td>
                     </tr>
                     <tr>
