@@ -1,6 +1,6 @@
 import { faDiagramProject } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getBlockdagInfo } from "../karlsen-api-client";
 
 const BlockDAGBox = () => {
@@ -18,7 +18,8 @@ const BlockDAGBox = () => {
       : `${(parseFloat(hashrateValue) * 1000).toFixed(2)} GH/s`;
   };
 
-  const initBox = async () => {
+  // wrap initBox in useCallback to avoid dependency of useEffect
+  const initBox = useCallback(async () => {
     const dag_info = await getBlockdagInfo();
 
     console.log("DAG Info ", dag_info);
@@ -28,7 +29,7 @@ const BlockDAGBox = () => {
     setHeaderCount(dag_info.headerCount);
     setVirtualDaaScore(dag_info.virtualDaaScore);
     setHashrate(calculateAndFormatHashrate(dag_info.difficulty));
-  };
+  }, []);
 
   useEffect(() => {
     initBox();
@@ -41,7 +42,7 @@ const BlockDAGBox = () => {
       setHashrate(calculateAndFormatHashrate(dag_info.difficulty));
     }, 60000);
     return () => clearInterval(updateInterval);
-  }, []);
+  }, [initBox]);
 
   useEffect(() => {
     document
