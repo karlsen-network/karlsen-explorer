@@ -7,6 +7,8 @@ import {
   getTotalAddresses,
   getAddressDistribution,
 } from "../karlsen-api-client";
+import { PieChart, pieChartDefaultProps } from "react-minimal-pie-chart";
+import { useWindowSize } from "react-use";
 
 const Distribution = () => {
   const [wallets, setWallets] = useState([]);
@@ -18,7 +20,9 @@ const Distribution = () => {
     moreThan1k: 0,
     others: 0,
   });
+
   const [loading, setLoading] = useState(true);
+  const { width } = useWindowSize();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,13 +59,49 @@ const Distribution = () => {
     fetchData();
   }, []);
 
+  // data for the pie chart
+  const totalForChart =
+    distributions.moreThan1M +
+    distributions.moreThan100k +
+    distributions.moreThan10k +
+    distributions.moreThan1k +
+    distributions.others;
+
+  const chartData = [
+    {
+      title: "> 1M coins",
+      value: (distributions.moreThan1M / totalForChart) * 100,
+      color: "#213A53",
+    },
+    {
+      title: "> 100K coins",
+      value: (distributions.moreThan100k / totalForChart) * 100,
+      color: "#66788A",
+    },
+    {
+      title: "> 10K coins",
+      value: (distributions.moreThan10k / totalForChart) * 100,
+      color: "#8492A2",
+    },
+    {
+      title: "> 1K coins",
+      value: (distributions.moreThan1k / totalForChart) * 100,
+      color: "#8C9BA8",
+    },
+    {
+      title: "Others",
+      value: (distributions.others / totalForChart) * 100,
+      color: "#D9DDE2",
+    },
+  ];
+
   return (
     <div className="blocks-page">
       <Container className="webpage px-md-5 blocks-page-overview" fluid>
         <div className="block-overview mb-4">
           <div className="d-flex flex-row w-100">
             <h4 className="block-overview-header text-center w-100 mt-4">
-              <FaWallet size="1.7rem" />
+              <FaWallet className="rotate" size="1.7rem" />
               Distribution
             </h4>
           </div>
@@ -106,7 +146,31 @@ const Distribution = () => {
                   </tbody>
                 </table>
 
-                <table className="styled-table w-100">
+                {/* Pie Chart */}
+                <div className="d-flex justify-content-center mt-4">
+                  <PieChart
+                    data={chartData}
+                    label={({ dataEntry }) =>
+                      `${dataEntry.value.toFixed(2)}% ${dataEntry.title}`
+                    }
+                    lineWidth={50}
+                    paddingAngle={5}
+                    radius={pieChartDefaultProps.radius - 10}
+                    labelStyle={{
+                      fill: "#fff",
+                      fontSize: "3px",
+                      fontFamily: "sans-serif",
+                    }}
+                    labelPosition={105}
+                    style={{
+                      maxHeight: width < 768 ? "250px" : "350px",
+                      width: "100%",
+                    }}
+                    lengthAngle={360}
+                  />
+                </div>
+
+                <table className="styled-table w-100 mt-4">
                   <thead>
                     <tr>
                       <th>Rank</th>
