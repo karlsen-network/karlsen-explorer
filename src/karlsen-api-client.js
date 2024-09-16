@@ -33,6 +33,17 @@ export async function getBlockdagInfo() {
   return res;
 }
 
+export async function getKarlsendInfo() {
+  const res = await fetch(`https://${apiAddress}/info/karlsend`, {
+    headers: { "Access-Control-Allow-Origin": "*" },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    });
+  return res;
+}
+
 export async function getCoinSupply() {
   const res = await fetch(`https://${apiAddress}/info/coinsupply`, {
     headers: { "Access-Control-Allow-Origin": "*" },

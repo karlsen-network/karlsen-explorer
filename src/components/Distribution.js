@@ -15,14 +15,24 @@ const Distribution = () => {
   const [totalAddresses, setTotalAddresses] = useState(0);
   const [distributions, setDistributions] = useState({
     moreThan1M: 0,
+    moreThan500k: 0,
     moreThan100k: 0,
     moreThan10k: 0,
     moreThan1k: 0,
+    moreThan100: 0,
     others: 0,
   });
 
   const [loading, setLoading] = useState(true);
   const { width } = useWindowSize();
+
+  // define the address to tag mapping as a const (current ones are for testing)
+  const addressTags = {
+    "karlsen:qrdn0eyzyc2z4leqwgxcngt98su5gq4p47gz435q8mu2wh8c78502qlfquvnj":
+      "Mexc",
+    "karlsen:qzmf98x2k50txs0ljctwmshsztfyedy54mpa2ndz0lhj8pdfwwhgun66h89d7":
+      "Xeggex",
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,16 +47,20 @@ const Distribution = () => {
 
         // distribution data
         const moreThan1M = await getAddressDistribution(1000000);
+        const moreThan500k = await getAddressDistribution(500000);
         const moreThan100k = await getAddressDistribution(100000);
         const moreThan10k = await getAddressDistribution(10000);
         const moreThan1k = await getAddressDistribution(1000);
-        const others = totalAddressesCount - moreThan1k;
+        const moreThan100 = await getAddressDistribution(100);
+        const others = totalAddressesCount - moreThan100;
 
         setDistributions({
           moreThan1M,
+          moreThan500k,
           moreThan100k,
           moreThan10k,
           moreThan1k,
+          moreThan100,
           others,
         });
 
@@ -62,9 +76,11 @@ const Distribution = () => {
   // data for the pie chart
   const totalForChart =
     distributions.moreThan1M +
+    distributions.moreThan500k +
     distributions.moreThan100k +
     distributions.moreThan10k +
     distributions.moreThan1k +
+    distributions.moreThan100 +
     distributions.others;
 
   const chartData = [
@@ -72,6 +88,11 @@ const Distribution = () => {
       title: "> 1M KLS",
       value: (distributions.moreThan1M / totalForChart) * 100,
       color: "#213A53",
+    },
+    {
+      title: "> 500K KLS",
+      value: (distributions.moreThan500k / totalForChart) * 100,
+      color: "#445A6F",
     },
     {
       title: "> 100K KLS",
@@ -87,6 +108,11 @@ const Distribution = () => {
       title: "> 1K KLS",
       value: (distributions.moreThan1k / totalForChart) * 100,
       color: "#8C9BA8",
+    },
+    {
+      title: "> 100 KLS",
+      value: (distributions.moreThan100 / totalForChart) * 100,
+      color: "#AAB9C5",
     },
     {
       title: "Others",
@@ -128,6 +154,10 @@ const Distribution = () => {
                       <td align="left">{distributions.moreThan1M}</td>
                     </tr>
                     <tr>
+                      <td>{">"}500k KLS</td>
+                      <td align="left">{distributions.moreThan500k}</td>
+                    </tr>
+                    <tr>
                       <td>{">"}100k KLS</td>
                       <td align="left">{distributions.moreThan100k}</td>
                     </tr>
@@ -138,6 +168,10 @@ const Distribution = () => {
                     <tr>
                       <td>{">"}1k KLS</td>
                       <td align="left">{distributions.moreThan1k}</td>
+                    </tr>
+                    <tr>
+                      <td>{">"}100 KLS</td>
+                      <td align="left">{distributions.moreThan100}</td>
                     </tr>
                     <tr>
                       <td>Others</td>
@@ -176,6 +210,7 @@ const Distribution = () => {
                       <th>Rank</th>
                       <th>Amount</th>
                       <th>Address</th>
+                      <th>Tags</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -191,6 +226,7 @@ const Distribution = () => {
                             {wallet.address}
                           </Link>
                         </td>
+                        <td>{addressTags[wallet.address] || ""}</td>
                       </tr>
                     ))}
                   </tbody>

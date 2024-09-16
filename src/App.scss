@@ -598,6 +598,23 @@ body {
   max-width: none;
 }
 
+.styled-table {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: visible;
+  table-layout: auto;
+  white-space: normal;
+}
+
+/* scroll on smaller screens (below 1200px) */
+@media (max-width: 1200px) {
+  .styled-table {
+    overflow-x: auto;
+    display: block;
+    white-space: nowrap;
+  }
+}
+
 .klsBlockHeader {
   font-weight: bold;
   font-size: large;

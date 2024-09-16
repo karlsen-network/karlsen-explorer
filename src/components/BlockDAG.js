@@ -1,7 +1,7 @@
 import { faDiagramProject } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState, useCallback } from "react";
-import { getBlockdagInfo } from "../karlsen-api-client";
+import { getBlockdagInfo, getKarlsendInfo } from "../karlsen-api-client";
 
 const BlockDAGBox = () => {
   const [networkName, setNetworkName] = useState("");
@@ -9,6 +9,7 @@ const BlockDAGBox = () => {
   const [headerCount, setHeaderCount] = useState("");
   const [virtualDaaScore, setVirtualDaaScore] = useState("");
   const [hashrate, setHashrate] = useState("");
+  const [mempool, setMempool] = useState("");
 
   // calculate and assign correct hashrate unit
   const calculateAndFormatHashrate = (difficulty) => {
@@ -21,6 +22,7 @@ const BlockDAGBox = () => {
   // wrap initBox in useCallback to avoid dependency of useEffect
   const initBox = useCallback(async () => {
     const dag_info = await getBlockdagInfo();
+    const karlsendInfo = await getKarlsendInfo();
 
     console.log("DAG Info ", dag_info);
 
@@ -29,6 +31,7 @@ const BlockDAGBox = () => {
     setHeaderCount(dag_info.headerCount);
     setVirtualDaaScore(dag_info.virtualDaaScore);
     setHashrate(calculateAndFormatHashrate(dag_info.difficulty));
+    setMempool(karlsendInfo.mempoolSize);
   }, []);
 
   useEffect(() => {
@@ -109,6 +112,12 @@ const BlockDAGBox = () => {
             <td className="cardBoxElement">Header count</td>
             <td className="pt-1" id="headerCount">
               {headerCount}
+            </td>
+          </tr>
+          <tr>
+            <td className="cardBoxElement">Mempool count</td>
+            <td className="pt-1" id="mempool">
+              {mempool}
             </td>
           </tr>
           <tr>
