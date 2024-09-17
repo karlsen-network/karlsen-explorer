@@ -13,16 +13,7 @@ import { useWindowSize } from "react-use";
 const Distribution = () => {
   const [wallets, setWallets] = useState([]);
   const [totalAddresses, setTotalAddresses] = useState(0);
-  const [distributions, setDistributions] = useState({
-    moreThan1M: 0,
-    moreThan500k: 0,
-    moreThan100k: 0,
-    moreThan10k: 0,
-    moreThan1k: 0,
-    moreThan100: 0,
-    others: 0,
-  });
-
+  const [distributions, setDistributions] = useState([]);
   const [loading, setLoading] = useState(true);
   const { width } = useWindowSize();
 
@@ -34,92 +25,87 @@ const Distribution = () => {
       "Xeggex",
   };
 
+  // distribution ranges with labels and colors
+  const distributionThresholds = [
+    { threshold: 10000000, label: ">10M KLS", color: "#1F3954" },
+    { threshold: 1000000, label: ">1M KLS", color: "#213A53" },
+    { threshold: 500000, label: ">500K KLS", color: "#445A6F" },
+    { threshold: 100000, label: ">100K KLS", color: "#66788A" },
+    { threshold: 10000, label: ">10K KLS", color: "#8492A2" },
+    { threshold: 1000, label: ">1K KLS", color: "#8C9BA8" },
+    { threshold: 100, label: ">100 KLS", color: "#AAB9C5" },
+  ];
+
+  // distribution data based on thresholds
+  const fetchDistributions = async (totalAddressesCount) => {
+    try {
+      const distributionData = await Promise.all(
+        distributionThresholds.map(({ threshold }) =>
+          getAddressDistribution(threshold),
+        ),
+      );
+
+      const distributions = distributionThresholds.map((item, index) => ({
+        ...item,
+        value: distributionData[index],
+      }));
+
+      const others =
+        totalAddressesCount - distributionData[distributionData.length - 1];
+
+      // 'Others'
+      distributions.push({
+        label: "Others",
+        value: others,
+        color: "#D9DDE2",
+      });
+
+      return distributions;
+    } catch (error) {
+      throw new Error("Error fetching distribution data");
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // top wallets
-        const walletsData = await getTopWallets();
-        setWallets(walletsData.sort((a, b) => b.amount - a.amount));
+        setLoading(true);
 
-        // total number of addresses
-        const totalAddressesCount = await getTotalAddresses();
+        // fetch data in parallel
+        const [walletsData, totalAddressesCount] = await Promise.all([
+          getTopWallets(),
+          getTotalAddresses(),
+        ]);
+
+        setWallets(walletsData.sort((a, b) => b.amount - a.amount));
         setTotalAddresses(totalAddressesCount);
 
-        // distribution data
-        const moreThan1M = await getAddressDistribution(1000000);
-        const moreThan500k = await getAddressDistribution(500000);
-        const moreThan100k = await getAddressDistribution(100000);
-        const moreThan10k = await getAddressDistribution(10000);
-        const moreThan1k = await getAddressDistribution(1000);
-        const moreThan100 = await getAddressDistribution(100);
-        const others = totalAddressesCount - moreThan100;
-
-        setDistributions({
-          moreThan1M,
-          moreThan500k,
-          moreThan100k,
-          moreThan10k,
-          moreThan1k,
-          moreThan100,
-          others,
-        });
+        // fetch and set distribution data
+        const distributionData = await fetchDistributions(totalAddressesCount);
+        setDistributions(distributionData);
 
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error(error.message);
+        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
-  // data for the pie chart
-  const totalForChart =
-    distributions.moreThan1M +
-    distributions.moreThan500k +
-    distributions.moreThan100k +
-    distributions.moreThan10k +
-    distributions.moreThan1k +
-    distributions.moreThan100 +
-    distributions.others;
+  // total for chart percentages
+  const totalForChart = distributions.reduce(
+    (sum, { value }) => sum + value,
+    0,
+  );
 
-  const chartData = [
-    {
-      title: "> 1M KLS",
-      value: (distributions.moreThan1M / totalForChart) * 100,
-      color: "#213A53",
-    },
-    {
-      title: "> 500K KLS",
-      value: (distributions.moreThan500k / totalForChart) * 100,
-      color: "#445A6F",
-    },
-    {
-      title: "> 100K KLS",
-      value: (distributions.moreThan100k / totalForChart) * 100,
-      color: "#66788A",
-    },
-    {
-      title: "> 10K KLS",
-      value: (distributions.moreThan10k / totalForChart) * 100,
-      color: "#8492A2",
-    },
-    {
-      title: "> 1K KLS",
-      value: (distributions.moreThan1k / totalForChart) * 100,
-      color: "#8C9BA8",
-    },
-    {
-      title: "> 100 KLS",
-      value: (distributions.moreThan100 / totalForChart) * 100,
-      color: "#AAB9C5",
-    },
-    {
-      title: "Others",
-      value: (distributions.others / totalForChart) * 100,
-      color: "#D9DDE2",
-    },
-  ];
+  // prep data for the pie chart
+  const chartData = distributions.map(({ label, value, color }) => ({
+    title: label,
+    value: totalForChart ? (value / totalForChart) * 100 : 0,
+    color,
+  }));
 
   return (
     <div className="blocks-page">
@@ -141,7 +127,7 @@ const Distribution = () => {
                 <div className="blockinfo-summary">
                   <p>Total Addresses: {totalAddresses}</p>
                 </div>
-                <table className="styled-table w-100 mb-4">
+                <table className="top-table w-100 mb-4">
                   <thead>
                     <tr>
                       <th>Distribution Range</th>
@@ -149,34 +135,12 @@ const Distribution = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>{">"}1M KLS</td>
-                      <td align="left">{distributions.moreThan1M}</td>
-                    </tr>
-                    <tr>
-                      <td>{">"}500k KLS</td>
-                      <td align="left">{distributions.moreThan500k}</td>
-                    </tr>
-                    <tr>
-                      <td>{">"}100k KLS</td>
-                      <td align="left">{distributions.moreThan100k}</td>
-                    </tr>
-                    <tr>
-                      <td>{">"}10k KLS</td>
-                      <td align="left">{distributions.moreThan10k}</td>
-                    </tr>
-                    <tr>
-                      <td>{">"}1k KLS</td>
-                      <td align="left">{distributions.moreThan1k}</td>
-                    </tr>
-                    <tr>
-                      <td>{">"}100 KLS</td>
-                      <td align="left">{distributions.moreThan100}</td>
-                    </tr>
-                    <tr>
-                      <td>Others</td>
-                      <td align="left">{distributions.others}</td>
-                    </tr>
+                    {distributions.map(({ label, value }) => (
+                      <tr key={label}>
+                        <td>{label}</td>
+                        <td align="left">{value}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
 
@@ -204,6 +168,7 @@ const Distribution = () => {
                   />
                 </div>
 
+                {/* Wallets Table */}
                 <table className="styled-table w-100 mt-4">
                   <thead>
                     <tr>
