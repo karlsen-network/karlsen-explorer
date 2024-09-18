@@ -17,12 +17,14 @@ const Distribution = () => {
   const [loading, setLoading] = useState(true);
   const { width } = useWindowSize();
 
-  // define the address to tag mapping as a const (current ones are for testing)
+  // define the address to tag mapping as a const
   const addressTags = {
     "karlsen:qrdn0eyzyc2z4leqwgxcngt98su5gq4p47gz435q8mu2wh8c78502qlfquvnj":
-      "Mexc",
-    "karlsen:qzmf98x2k50txs0ljctwmshsztfyedy54mpa2ndz0lhj8pdfwwhgun66h89d7":
+      "(Mexc)",
+    "karlsen:qpjnywfxsdrj3nkuscf4mc0m457wt35sgfgfv379zuuekl6z0ulwkkgayg83r":
       "Xeggex",
+    "karlsen:qqlahashstjepzax3sa33vdn6a7tul5wvqs8adzgrr6lzt280ctw5my64p427":
+      "NonKYC",
   };
 
   // distribution ranges with labels and colors
