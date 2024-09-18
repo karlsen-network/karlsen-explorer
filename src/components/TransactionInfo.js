@@ -9,14 +9,7 @@ import BlueScoreContext from "./BlueScoreContext.js";
 import CopyButton from "./CopyButton.js";
 
 const getOutputFromIndex = (outputs, index) => {
-  const numIndex = Number(index); // Convert index to a number
-  for (const output of outputs) {
-    if (Number(output.index) === numIndex) {
-      // Compare as numbers
-      return output;
-    }
-  }
-  return null; // Return null if no match found
+  return outputs[index];
 };
 
 const TransactionInfo = () => {
@@ -187,12 +180,12 @@ const TransactionInfo = () => {
                                     additionalTxInfo[
                                       tx_input.previous_outpoint_hash
                                     ]?.outputs || [],
-                                    tx_input.previous_outpoint_index,
+                                    tx_input?.previous_outpoint_index,
                                   )?.amount || 0,
                               )
                               .reduce((a, b) => a + b) -
                               (
-                                txInfo.outputs?.map((v) => v.amount) || [0]
+                                txInfo.outputs?.map((v) => v?.amount) || [0]
                               ).reduce((a, b) => a + b)) /
                               100000000}{" "}
                             KLS
@@ -296,8 +289,8 @@ const TransactionInfo = () => {
                                   additionalTxInfo[
                                     tx_input.previous_outpoint_hash
                                   ].outputs,
-                                  tx_input.previous_outpoint_index,
-                                ).amount / 100000000}
+                                  tx_input?.previous_outpoint_index,
+                                )?.amount / 100000000}
                                 &nbsp;KLS
                               </span>
                             </div>
@@ -308,7 +301,7 @@ const TransactionInfo = () => {
                           Previous Outpoint Index + Hash
                         </div>
                         <div className="utxo-value-mono">
-                          #{tx_input.previous_outpoint_index}{" "}
+                          #{tx_input?.previous_outpoint_index}{" "}
                           {tx_input.previous_outpoint_hash}
                         </div>
                       </Col>
@@ -324,8 +317,8 @@ const TransactionInfo = () => {
                                       additionalTxInfo[
                                         tx_input.previous_outpoint_hash
                                       ].outputs,
-                                      tx_input.previous_outpoint_index,
-                                    ).script_public_key_address
+                                      tx_input?.previous_outpoint_index,
+                                    )?.script_public_key_address
                                   }`}
                                   className="blockinfo-link"
                                 >
@@ -334,8 +327,8 @@ const TransactionInfo = () => {
                                       additionalTxInfo[
                                         tx_input.previous_outpoint_hash
                                       ].outputs,
-                                      tx_input.previous_outpoint_index,
-                                    ).script_public_key_address
+                                      tx_input?.previous_outpoint_index,
+                                    )?.script_public_key_address
                                   }
                                 </Link>
                               </div>
@@ -369,7 +362,7 @@ const TransactionInfo = () => {
                         <div className="blockinfo-key mt-2 mt-lg-0">Amount</div>
                         <div className="utxo-value">
                           <span className="utxo-amount">
-                            +{numberWithCommas(tx_output.amount / 100000000)}
+                            +{numberWithCommas(tx_output?.amount / 100000000)}
                             &nbsp;KLS
                           </span>
                         </div>
@@ -388,10 +381,10 @@ const TransactionInfo = () => {
                         </div>
                         <div className="utxo-value-mono">
                           <Link
-                            to={`/addresses/${tx_output.script_public_key_address}`}
+                            to={`/addresses/${tx_output?.script_public_key_address}`}
                             className="blockinfo-link"
                           >
-                            {tx_output.script_public_key_address}
+                            {tx_output?.script_public_key_address}
                           </Link>
                         </div>
                       </Col>
