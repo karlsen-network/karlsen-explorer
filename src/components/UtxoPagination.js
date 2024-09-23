@@ -1,4 +1,4 @@
-import { Button, Form, Pagination } from "react-bootstrap";
+import { Pagination } from "react-bootstrap";
 
 const UtxoPagination = (props) => {
   let items = [];

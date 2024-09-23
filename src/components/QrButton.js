@@ -1,7 +1,7 @@
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import { FaQrcode } from "react-icons/fa";
 
-export default (props) => {
+const QrButton = (props) => {
   return (
     <OverlayTrigger
       key="qr"
@@ -17,3 +17,5 @@ export default (props) => {
     </OverlayTrigger>
   );
 };
+
+export default QrButton;
