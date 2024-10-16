@@ -354,7 +354,7 @@ const AddressInfo = () => {
             <div className="addressinfo-header mt-4 ms-sm-5">UTXOs count</div>
             <div className="utxo-value ms-sm-5">
               {!loadingUtxos ? (
-                numberWithCommas(utxos.length)
+                utxos.length
               ) : (
                 <Spinner animation="border" variant="primary" />
               )}
