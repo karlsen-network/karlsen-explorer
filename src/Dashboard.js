@@ -47,9 +47,7 @@ function Dashboard() {
             navigate(`/blocks/${v}`);
           }
         })
-        .catch((err) => {
-          console.log("hier");
-        });
+        .catch((err) => {});
     }
 
     if (v.startsWith("karlsen:")) {
