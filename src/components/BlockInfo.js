@@ -85,30 +85,28 @@ const BlockInfo = () => {
         while (childListGlob.length > 0) {
           const hash = childListGlob.shift();
           const block = await getBlock(hash);
-          if (block.verboseData.isChainBlock) {
-            return block.verboseData.mergeSetBluesHashes.includes(
-              blockInfo.verboseData.hash,
+          if (block?.verboseData?.isChainBlock) {
+            return block.verboseData.mergeSetBluesHashes?.includes(
+              blockInfo?.verboseData?.hash,
             );
           } else {
             // console.log("PUSH", block.verboseData.childrenHashes)
-            childListGlob.push(block.verbosedata.childrenHashes);
+            childListGlob.push(...(block?.verboseData?.childrenHashes || []));
           }
         }
       }
 
       if (!blockInfo.verboseData.childrenHashes) {
-        console.log("heeeere");
         setIsBlueBlock("none");
       } else {
-        console.log("everything ok");
-        isBlueBlock([...(blockInfo.verboseData.childrenHashes || [])])
+        isBlueBlock([...(blockInfo?.verboseData?.childrenHashes || [])])
           .then((res) => setIsBlueBlock(res))
           .catch((err) => console.log("ERROR", err));
       }
 
       let [address, miner] = ["No miner info", "No miner info"];
 
-      if (blockInfo.transactions[0]?.payload) {
+      if (blockInfo?.transactions?.[0]?.payload) {
         [address, miner] = parsePayload(blockInfo.transactions[0].payload);
       }
 
