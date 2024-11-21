@@ -1,116 +1,72 @@
 import { faDiagramProject } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
-import { getBlockdagInfo } from "../karlsen-api-client";
+import { useEffect, useState, useCallback } from "react";
+import { getBlockdagInfo, getKarlsendInfo } from "../karlsen-api-client";
 
 const BlockDAGBox = () => {
-  const [data, setData] = useState({});
-  const [isConnected, setIsConnected] = useState(false);
-
   const [networkName, setNetworkName] = useState("");
-  const [blockCount, setBlockCount] = useState();
-  const [headerCount, setHeaderCount] = useState("");
   const [virtualDaaScore, setVirtualDaaScore] = useState("");
   const [hashrate, setHashrate] = useState("");
+  const [mempool, setMempool] = useState("");
 
-  const initBox = async () => {
+  // calculate and assign correct hashrate unit
+  const formatHashrate = (hashraw, decimals) => {
+    let hashrateValue = hashraw;
+    let unit = "H/s";
+    if (hashrateValue >= 1e12) {
+      hashrateValue = hashrateValue / 1e12;
+      unit = "TH/s";
+    } else if (hashrateValue >= 1e9) {
+      hashrateValue = hashrateValue / 1e9;
+      unit = "GH/s";
+    } else if (hashrateValue >= 1e6) {
+      hashrateValue = hashrateValue / 1e6;
+      unit = "MH/s";
+    }
+    return `${hashrateValue.toFixed(decimals)} ${unit}`;
+  };
+
+  // wrap initBox in useCallback to avoid dependency of useEffect
+  const initBox = useCallback(async () => {
     const dag_info = await getBlockdagInfo();
+    const karlsendInfo = await getKarlsendInfo();
 
     console.log("DAG Info ", dag_info);
 
     setNetworkName(dag_info.networkName);
-    setBlockCount(dag_info.blockCount);
-    setHeaderCount(dag_info.headerCount);
     setVirtualDaaScore(dag_info.virtualDaaScore);
-    setHashrate(((dag_info.difficulty * 2) / 1000000000000).toFixed(2));
-  };
+    const hashraw = dag_info.difficulty * 2;
+    setHashrate(formatHashrate(hashraw, 2));
+    setMempool(karlsendInfo.mempoolSize);
+  }, []);
 
   useEffect(() => {
     initBox();
     const updateInterval = setInterval(async () => {
       const dag_info = await getBlockdagInfo();
       setNetworkName(dag_info.networkName);
-      setBlockCount(dag_info.blockCount);
-      setHeaderCount(dag_info.headerCount);
       setVirtualDaaScore(dag_info.virtualDaaScore);
-      setHashrate(((dag_info.difficulty * 2) / 1000000000000).toFixed(2));
+      const hashraw = dag_info.difficulty * 2;
+      setHashrate(formatHashrate(hashraw, 2));
     }, 60000);
-    return async () => {
-      clearInterval(updateInterval);
-    };
-  }, []);
+    return () => clearInterval(updateInterval);
+  }, [initBox]);
 
-  useEffect(
-    (e) => {
-      document.getElementById("blockCount").animate(
-        [
-          // keyframes
-          { opacity: "1" },
-          { opacity: "0.6" },
-          { opacity: "1" },
-        ],
-        {
-          // timing options
-          duration: 300,
-        },
-      );
-    },
-    [blockCount],
-  );
+  useEffect(() => {
+    document
+      .getElementById("virtualDaaScore")
+      .animate([{ opacity: "1" }, { opacity: "0.6" }, { opacity: "1" }], {
+        duration: 300,
+      });
+  }, [virtualDaaScore]);
 
-  useEffect(
-    (e) => {
-      document.getElementById("headerCount").animate(
-        [
-          // keyframes
-          { opacity: "1" },
-          { opacity: "0.6" },
-          { opacity: "1" },
-        ],
-        {
-          // timing options
-          duration: 300,
-        },
-      );
-    },
-    [headerCount],
-  );
-
-  useEffect(
-    (e) => {
-      document.getElementById("virtualDaaScore").animate(
-        [
-          // keyframes
-          { opacity: "1" },
-          { opacity: "0.6" },
-          { opacity: "1" },
-        ],
-        {
-          // timing options
-          duration: 300,
-        },
-      );
-    },
-    [virtualDaaScore],
-  );
-
-  useEffect(
-    (e) => {
-      document.getElementById("hashrate").animate(
-        [
-          // keyframes
-          { opacity: "1" },
-          { opacity: "0.6" },
-          { opacity: "1" },
-        ],
-        {
-          // timing options
-          duration: 300,
-        },
-      );
-    },
-    [hashrate],
-  );
+  useEffect(() => {
+    document
+      .getElementById("hashrate")
+      .animate([{ opacity: "1" }, { opacity: "0.6" }, { opacity: "1" }], {
+        duration: 300,
+      });
+  }, [hashrate]);
 
   return (
     <>
@@ -136,15 +92,9 @@ const BlockDAGBox = () => {
             <td className="pt-1 text-nowrap">{networkName}</td>
           </tr>
           <tr>
-            <td className="cardBoxElement">Block count</td>
-            <td className="pt-1" id="blockCount">
-              {blockCount}
-            </td>
-          </tr>
-          <tr>
-            <td className="cardBoxElement">Header count</td>
-            <td className="pt-1" id="headerCount">
-              {headerCount}
+            <td className="cardBoxElement">Mempool count</td>
+            <td className="pt-1" id="mempool">
+              {mempool}
             </td>
           </tr>
           <tr>
@@ -156,7 +106,7 @@ const BlockDAGBox = () => {
           <tr>
             <td className="cardBoxElement">Hashrate</td>
             <td className="pt-1" id="hashrate">
-              {hashrate} TH/s
+              {hashrate}
             </td>
           </tr>
         </table>

@@ -31,19 +31,15 @@ import PriceContext from "./components/PriceContext";
 import TransactionInfo from "./components/TransactionInfo";
 import TxPage from "./components/TxPage";
 import Dashboard from "./Dashboard";
+import Distribution from "./components/Distribution";
 import { getBlock } from "./karlsen-api-client";
 import { apiAddress } from "./addresses";
-// import 'moment/min/locales';
-
-// var locale = window.navigator.userLanguage || window.navigator.language || "en";
-// moment.locale(locale);
-// moment.locale('en');
 
 const buildVersion = process.env.REACT_APP_VERCEL_GIT_COMMIT_SHA || "xxxxxx";
 
 document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("scroll", function () {
-    if (window.location.pathname == "/") {
+    if (window.location.pathname === "/") {
       if (window.scrollY > 200) {
         document.getElementById("navbar_top").classList.add("fixed-top");
       } else {
@@ -60,7 +56,6 @@ const socket = io(`wss://${apiAddress}`, {
 function App() {
   const [price, setPrice] = useState("");
   const [marketData, setMarketData] = useState("");
-
   const [blocks, setBlocks] = useState([]);
   const [blueScore, setBlueScore] = useState(0);
   const [isConnected, setIsConnected] = useState();
@@ -75,17 +70,17 @@ function App() {
     e.preventDefault();
     const v = e.target.searchbox.value;
 
-    if (v.length == 64) {
+    if (v.length === 64) {
       getBlock(v)
         .then((data) => {
-          if (data.detail == "Block not found") {
+          if (data.detail === "Block not found") {
             navigate(`/txs/${v}`);
           } else {
             navigate(`/blocks/${v}`);
           }
         })
         .catch((err) => {
-          console.log("hier");
+          console.log(err);
         });
     }
     if (v.startsWith("karlsen:")) {
@@ -145,6 +140,8 @@ function App() {
       socket.off("connect");
       socket.off("disconnect");
       socket.off("new-block");
+      socket.off("last-blocks");
+      socket.off("bluescore");
     };
   }, []);
 
@@ -158,7 +155,6 @@ function App() {
     }
   };
 
-  //<Button variant="primary">Go!</Button>
   return (
     <LastBlocksContext.Provider value={{ blocks, isConnected }}>
       <PriceContext.Provider value={{ price, marketData }}>
@@ -170,7 +166,7 @@ function App() {
               variant="dark"
               sticky="top"
               id="navbar_top"
-              className={location.pathname == "/" ? "" : "fixed-top"}
+              className={location.pathname === "/" ? "" : "fixed-top"}
             >
               <Container id="navbar-container" fluid>
                 <div className="navbar-title">
@@ -180,6 +176,7 @@ function App() {
                         <img
                           className="shake"
                           src="/k-icon-glow.png"
+                          alt=""
                           style={{
                             marginRight: ".5rem",
                             width: "4rem",
@@ -226,6 +223,15 @@ function App() {
                         Transactions
                       </NavLink>
                     </Nav.Item>
+                    <Nav.Item>
+                      <NavLink
+                        className="nav-link fs-5"
+                        onClick={closeMenuIfNeeded}
+                        to={"/distribution"}
+                      >
+                        Distribution
+                      </NavLink>
+                    </Nav.Item>
                   </Nav>
                   <div className="ms-auto navbar-price">
                     ${price} <span className="text-light">/ KLS</span>
@@ -234,7 +240,7 @@ function App() {
               </Container>
             </Navbar>
             <div className="search-row">
-              <Container className="webpage" hidden={location.pathname == "/"}>
+              <Container className="webpage" hidden={location.pathname === "/"}>
                 <Row>
                   <Col xs={12}>
                     <Form onSubmit={search} className="">
@@ -264,6 +270,7 @@ function App() {
               <Route path="/blocks" element={<BlocksPage />} />
               <Route path="/blocks/:id" element={<BlockInfo />} />
               <Route path="/blocks/:id/:txview" element={<BlockInfo />} />
+              <Route path="/distribution" element={<Distribution />} />
               <Route path="/addresses/:addr" element={<AddressInfoPage />} />
               <Route path="/txs" element={<TxPage />} />
               <Route path="/txs/:id" element={<TransactionInfo />} />
@@ -292,6 +299,7 @@ function App() {
                         className="blockinfo-link"
                         href="https://github.com/karlsen-network/karlsen-explorer"
                         target="_blank"
+                        rel="noopener noreferrer"
                       >
                         <FaGithub size="1.3rem" />
                       </a>
@@ -315,6 +323,7 @@ function App() {
                         className="blockinfo-link ms-3"
                         href={`https://${apiAddress}/`}
                         target="_blank"
+                        rel="noopener noreferrer"
                       >
                         <SiFastapi size="1.3rem" />
                       </a>
@@ -346,6 +355,7 @@ function App() {
                         className="blockinfo-link"
                         href="https://github.com/karlsen-network/karlsen-explorer"
                         target="_blank"
+                        rel="noopener noreferrer"
                       >
                         <FaGithub size="1.1rem" />
                       </a>
@@ -369,6 +379,7 @@ function App() {
                         className="blockinfo-link ms-2"
                         href={`https://${apiAddress}/`}
                         target="_blank"
+                        rel="noopener noreferrer"
                       >
                         <SiFastapi size="1.1rem" />
                       </a>

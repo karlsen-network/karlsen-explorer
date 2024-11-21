@@ -32,7 +32,6 @@ import {
   getTransactions,
   getTransactionsFromAddress,
 } from "../karlsen-api-client.js";
-import { FaQrcode } from "react-icons/fa";
 import BlueScoreContext from "./BlueScoreContext";
 import CopyButton from "./CopyButton.js";
 import PriceContext from "./PriceContext.js";
@@ -70,7 +69,7 @@ const AddressInfo = () => {
   const [showQr, setShowQr] = useState(false);
 
   const [detailedView, setDetailedView] = useState(
-    localStorage.getItem("detailedView") == "true",
+    localStorage.getItem("detailedView") === "true",
   );
 
   const [utxos, setUtxos] = useState([]);
@@ -113,25 +112,18 @@ const AddressInfo = () => {
     e.preventDefault();
   };
 
-  const getAddrFromOutputs = (outputs, i) => {
-    for (const o of outputs) {
-      if (o.index == i) {
-        return o.script_public_key_address;
-      }
-    }
+  const getAddrFromOutputs = (outputs, index) => {
+    return outputs?.[index]?.script_public_key_address;
   };
-  const getAmountFromOutputs = (outputs, i) => {
-    for (const o of outputs) {
-      if (o.index == i) {
-        return o.amount / 100000000;
-      }
-    }
+
+  const getAmountFromOutputs = (outputs, index) => {
+    return outputs?.[index]?.amount / 100000000;
   };
 
   const getAmount = (outputs, inputs) => {
-    var balance = 0;
+    let balance = 0;
     for (const o of outputs || []) {
-      if (o.script_public_key_address == addr) {
+      if (o.script_public_key_address === addr) {
         balance = balance + o.amount / 100000000;
       }
     }
@@ -140,18 +132,54 @@ const AddressInfo = () => {
         getAddrFromOutputs(
           txsInpCache[i.previous_outpoint_hash]?.outputs || [],
           i.previous_outpoint_index,
-        ) == addr
+        ) === addr
       ) {
         balance =
           balance -
           getAmountFromOutputs(
-            txsInpCache[i.previous_outpoint_hash]["outputs"],
+            txsInpCache[i.previous_outpoint_hash]?.outputs,
             i.previous_outpoint_index,
           );
       }
     }
     return balance;
   };
+
+  const loadTransactionsToShow = useCallback(
+    (addr, limit, offset) => {
+      setLoadingTxs(true);
+      getTransactionsFromAddress(addr, limit, offset)
+        .then((res) => {
+          setTxs(res);
+          if (res.length === 0) {
+            // page was too high. Set page 1
+            setActiveTx(1);
+            setLoadingTxs(false);
+            return;
+          }
+          console.log("loading done.");
+          setLoadingTxs(false);
+
+          getTransactions(
+            removeDuplicates(
+              res
+                .map((item) => item.inputs)
+                .flatMap((x) => x)
+                .map((x) => x.previous_outpoint_hash),
+            ),
+          ).then((txs) => {
+            const txInpObj = {};
+            txs.forEach((x) => (txInpObj[x.transaction_id] = x));
+            console.log(txInpObj);
+            setTxsInpCache(txInpObj);
+          });
+        })
+        .catch((ex) => {
+          setLoadingTxs(false);
+        });
+    },
+    [setTxs, setLoadingTxs, setTxsInpCache],
+  );
 
   useEffect(() => {
     const qrCode = new QRCodeStyling({
@@ -201,7 +229,7 @@ const AddressInfo = () => {
         setCurrentDaaScore(parseInt(block.header.daaScore));
       });
     });
-  }, []);
+  }, [addr]);
 
   useEffect(() => {
     localStorage.setItem("detailedView", detailedView);
@@ -226,47 +254,14 @@ const AddressInfo = () => {
     setSearch({ page: activeTx });
     setLoadingTxs(true);
     window.scrollTo(0, 0);
-    if (prevActiveTx !== undefined)
+    if (prevActiveTx !== undefined) {
       loadTransactionsToShow(addr, limit, (activeTx - 1) * 20);
-  }, [activeTx, limit]);
+    }
+  }, [activeTx, limit, addr, prevActiveTx, setSearch, loadTransactionsToShow]);
 
   function removeDuplicates(arr) {
     return arr.filter((item, index) => arr.indexOf(item) === index);
   }
-
-  const loadTransactionsToShow = (addr, limit, offset) => {
-    setLoadingTxs(true);
-    getTransactionsFromAddress(addr, limit, offset)
-      .then((res) => {
-        setTxs(res);
-        if (res.length === 0) {
-          // page was too high. Set page 1
-          setActiveTx(1);
-          setLoadingTxs(false);
-          return;
-        }
-        console.log("loading done.");
-        setLoadingTxs(false);
-
-        getTransactions(
-          removeDuplicates(
-            res
-              .map((item) => item.inputs)
-              .flatMap((x) => x)
-              .map((x) => x.previous_outpoint_hash),
-          ),
-        ).then((txs) => {
-          var txInpObj = {};
-          txs.forEach((x) => (txInpObj[x.transaction_id] = x));
-          console.log(txInpObj);
-          setTxsInpCache(txInpObj);
-        });
-      })
-      .catch((ex) => {
-        console.log("nicht eroflgreich", ex);
-        setLoadingTxs(false);
-      });
-  };
 
   useEffect(() => {
     if (view === "transactions") {
@@ -282,26 +277,12 @@ const AddressInfo = () => {
     }
     if (view === "utxos") {
       setLimit("20");
+      getAddressUtxos(addr).then((res) => {
+        setLoadingUtxos(false);
+        setUtxos(res);
+      });
     }
-  }, [view, limit]);
-
-  //     <div className="blockinfo-content">
-  //     <div className="blockinfo-header"><h3>Details for {addr}</h3></div>
-  //     <table className="blockinfo-table">
-  //         <tr className="trow">
-  //             <td>Balance</td>
-  //             <td>{addressBalance/100000000} KLS</td>
-  //         </tr>
-  //         <tr>
-  //             <td>UTXOs</td>
-  //             <td>{utxos ? <ul>
-  //                 {utxos
-  //                 .sort((a,b) => {return b.utxoEntry.blockDaaScore - a.utxoEntry.blockDaaScore})
-  //                 .map(x => <li>{x.utxoEntry.amount/100000000} KLS ({x.outpoint.transactionId})</li>)}
-  //             </ul> : <>Loading UTXOs <Spinner animation="border" role="status" /></>}</td>
-  //         </tr>
-  //     </table>
-  // </div> : <>Loading Address info <Spinner animation="border" role="status" /></>}
+  }, [view, limit, activeTx, addr, loadTransactionsToShow]);
 
   const handleLimit = (event) => {
     setLimit(event.target.value);
@@ -324,7 +305,7 @@ const AddressInfo = () => {
     if (view === "utxos" && utxos.length) {
       convertJsonToCSV(utxos);
     }
-  }, [view, txs, utxos]);
+  }, [view, txs, utxos, convertJsonToCSV]);
 
   const fileName = useMemo(
     () => getFileName(view, limit, addr, utxos.length),
@@ -345,14 +326,13 @@ const AddressInfo = () => {
           <Col md={12} className="mt-sm-4">
             <div className="addressinfo-header">Address</div>
             <div className="utxo-value-mono">
-              <span class="addressinfo-color">karlsen:</span>
+              <span className="addressinfo-color">karlsen:</span>
               {addr.substring(8, addr.length - 8)}
-              <span class="addressinfo-color">
+              <span className="addressinfo-color">
                 {addr.substring(addr.length - 8)}
               </span>
               <CopyButton size="2rem" text={addr} />
-              <QrButton addr="{addr}" onClick={() => setShowQr(!showQr)} />
-
+              <QrButton addr={addr} onClick={() => setShowQr(!showQr)} />
               <div className="qr-code" ref={ref} hidden={!showQr} />
             </div>
           </Col>
@@ -374,7 +354,7 @@ const AddressInfo = () => {
             <div className="addressinfo-header mt-4 ms-sm-5">UTXOs count</div>
             <div className="utxo-value ms-sm-5">
               {!loadingUtxos ? (
-                numberWithCommas(utxos.length)
+                utxos.length
               ) : (
                 <Spinner animation="border" variant="primary" />
               )}
@@ -450,8 +430,7 @@ const AddressInfo = () => {
           </Col>
         </Row>
       </Container>
-
-      {view == "transactions" && (
+      {view === "transactions" && (
         <Container className="webpage addressinfo-box mt-4" fluid>
           <Row className="border-bottom border-bottom-1">
             <Col xs={6} className="d-flex flex-row align-items-center">
@@ -461,7 +440,7 @@ const AddressInfo = () => {
               <div className="ms-auto d-flex flex-row align-items-center">
                 <Toggle
                   defaultChecked={
-                    localStorage.getItem("detailedView") == "true"
+                    localStorage.getItem("detailedView") === "true"
                   }
                   size={"1px"}
                   icons={false}
@@ -477,11 +456,10 @@ const AddressInfo = () => {
               md={6}
               className="d-flex flex-row justify-content-end ms-auto"
             >
-              {console.log("txc", txCount)}
               {txCount !== null ? (
                 <UtxoPagination
                   active={activeTx}
-                  total={Math.ceil(txCount / 20)}
+                  total={Math.ceil(txCount / limit)}
                   setActive={setActiveTx}
                 />
               ) : (
@@ -497,7 +475,7 @@ const AddressInfo = () => {
           {!loadingTxs ? (
             <>
               {txs.map((x) => (
-                <>
+                <div key={x.transaction_id}>
                   <Row className="utxo-value text-primary mt-3">
                     <Col sm={7} md={7}>
                       {moment(x.block_time).format("YYYY-MM-DD HH:mm:ss")}
@@ -505,7 +483,7 @@ const AddressInfo = () => {
                   </Row>
                   <Row className="pb-4 mb-0">
                     <Col sm={12} md={7}>
-                      <div className="utxo-header mt-3">transaction id</div>
+                      <div className="utxo-header mt-3">Transaction ID</div>
                       <div className="utxo-value-mono">
                         <Link
                           className="blockinfo-link"
@@ -516,7 +494,7 @@ const AddressInfo = () => {
                       </div>
                     </Col>
                     <Col sm={6} md={3}>
-                      <div className="utxo-header mt-3">amount</div>
+                      <div className="utxo-header mt-3">Amount</div>
                       <div className="utxo-value">
                         <Link
                           className="blockinfo-link"
@@ -542,7 +520,7 @@ const AddressInfo = () => {
                       </div>
                     </Col>
                     <Col sm={6} md={2}>
-                      <div className="utxo-header mt-3">value</div>
+                      <div className="utxo-header mt-3">Value</div>
                       <div className="utxo-value">
                         {numberWithCommas(
                           (getAmount(x.outputs, x.inputs) * price).toFixed(2),
@@ -551,7 +529,7 @@ const AddressInfo = () => {
                       </div>
                     </Col>
                   </Row>
-                  {!!detailedView && (
+                  {detailedView && (
                     <Row className="utxo-border pb-4 mb-4">
                       <Col sm={12} md={6}>
                         <div className="utxo-header mt-1">FROM</div>
@@ -560,64 +538,55 @@ const AddressInfo = () => {
                           style={{ fontSize: "smaller" }}
                         >
                           {x.inputs?.length > 0
-                            ? x.inputs.map((x) => {
-                                return txsInpCache &&
-                                  txsInpCache[x.previous_outpoint_hash] ? (
-                                  <>
-                                    <Row
-                                      id={`N${x.previous_outpoint_hash}${x.previous_outpoint_index}`}
+                            ? x.inputs.map((i) => {
+                                const inputOutputs =
+                                  txsInpCache[i.previous_outpoint_hash]
+                                    ?.outputs || [];
+                                const address = getAddrFromOutputs(
+                                  inputOutputs,
+                                  i.previous_outpoint_index,
+                                );
+                                const amount = getAmountFromOutputs(
+                                  inputOutputs,
+                                  i.previous_outpoint_index,
+                                );
+                                return address ? (
+                                  <Row
+                                    id={`N${i.previous_outpoint_hash}${i.previous_outpoint_index}`}
+                                    key={`${i.previous_outpoint_hash}${i.previous_outpoint_index}`}
+                                  >
+                                    <Col
+                                      xs={7}
+                                      className="adressinfo-tx-overflow pb-0"
                                     >
-                                      <Col
-                                        xs={7}
-                                        className="adressinfo-tx-overflow pb-0"
+                                      <Link
+                                        className="blockinfo-link"
+                                        to={`/addresses/${address}`}
                                       >
-                                        <Link
-                                          className="blockinfo-link"
-                                          to={`/addresses/${getAddrFromOutputs(txsInpCache[x.previous_outpoint_hash]["outputs"], x.previous_outpoint_index)}`}
+                                        <span
+                                          className={
+                                            address === addr
+                                              ? "highlight-addr"
+                                              : ""
+                                          }
                                         >
-                                          <span
-                                            className={
-                                              getAddrFromOutputs(
-                                                txsInpCache[
-                                                  x.previous_outpoint_hash
-                                                ]["outputs"],
-                                                x.previous_outpoint_index,
-                                              ) == addr
-                                                ? "highlight-addr"
-                                                : ""
-                                            }
-                                          >
-                                            {getAddrFromOutputs(
-                                              txsInpCache[
-                                                x.previous_outpoint_hash
-                                              ]["outputs"],
-                                              x.previous_outpoint_index,
-                                            )}
-                                          </span>
-                                        </Link>
-                                      </Col>
-                                      <Col xs={5}>
-                                        <span className="block-utxo-amount-minus">
-                                          -
-                                          {numberWithCommas(
-                                            getAmountFromOutputs(
-                                              txsInpCache[
-                                                x.previous_outpoint_hash
-                                              ]["outputs"],
-                                              x.previous_outpoint_index,
-                                            ),
-                                          )}
-                                          &nbsp;KLS
+                                          {address}
                                         </span>
-                                      </Col>
-                                    </Row>
-                                  </>
+                                      </Link>
+                                    </Col>
+                                    <Col xs={5}>
+                                      <span className="block-utxo-amount-minus">
+                                        -{numberWithCommas(amount)}
+                                        &nbsp;KLS
+                                      </span>
+                                    </Col>
+                                  </Row>
                                 ) : (
                                   <li
-                                    key={`${x.previous_outpoint_hash}${x.previous_outpoint_index}`}
+                                    key={`${i.previous_outpoint_hash}${i.previous_outpoint_index}`}
                                   >
-                                    {x.previous_outpoint_hash} #
-                                    {x.previous_outpoint_index}
+                                    {i.previous_outpoint_hash} #
+                                    {i.previous_outpoint_index}
                                   </li>
                                 );
                               })
@@ -630,30 +599,32 @@ const AddressInfo = () => {
                           className="utxo-value-mono"
                           style={{ fontSize: "smaller" }}
                         >
-                          {x.outputs.map((x) => (
-                            <Row>
+                          {x.outputs.map((o) => (
+                            <Row
+                              key={`${o.script_public_key_address}${o.index}`}
+                            >
                               <Col
                                 xs={7}
                                 className="pb-1 adressinfo-tx-overflow"
                               >
                                 <Link
                                   className="blockinfo-link"
-                                  to={`/addresses/${x.script_public_key_address}`}
+                                  to={`/addresses/${o.script_public_key_address}`}
                                 >
                                   <span
                                     className={
-                                      x.script_public_key_address == addr
+                                      o.script_public_key_address === addr
                                         ? "highlight-addr"
                                         : ""
                                     }
                                   >
-                                    {x.script_public_key_address}
+                                    {o.script_public_key_address}
                                   </span>
                                 </Link>
                               </Col>
                               <Col xs={5}>
                                 <span className="block-utxo-amount">
-                                  +{numberWithCommas(x.amount / 100000000)}
+                                  +{numberWithCommas(o.amount / 100000000)}
                                   &nbsp;KLS
                                 </span>
                               </Col>
@@ -698,7 +669,7 @@ const AddressInfo = () => {
                       </Col>
                     </Row>
                   )}
-                </>
+                </div>
               ))}
               <Row>
                 <Col
@@ -734,17 +705,16 @@ const AddressInfo = () => {
                     total={Math.ceil(txCount / limit)}
                     setActive={setActiveTx}
                   />
-                  {/* </> : <Spinner className="m-3" animation="border" variant="primary" />} */}
                 </Col>
               </Row>
-              //{" "}
             </>
           ) : (
             <Spinner className="m-3" animation="border" variant="primary" />
           )}
         </Container>
       )}
-      {view == "utxos" && (
+
+      {view === "utxos" && (
         <Container className="webpage addressinfo-box mt-4" fluid>
           <Row className="border-bottom border-bottom-1">
             <Col xs={1}>
@@ -762,9 +732,7 @@ const AddressInfo = () => {
                   setActive={setActive}
                 />
               </Col>
-            ) : (
-              <></>
-            )}
+            ) : null}
           </Row>
           {errorLoadingUtxos && <BiGhost className="error-icon" />}
           {!loadingUtxos ? (
@@ -775,7 +743,10 @@ const AddressInfo = () => {
               .slice((active - 1) * 10, (active - 1) * 10 + 10)
               .map((x) => (
                 <>
-                  <Row className="utxo-value text-primary mt-3">
+                  <Row
+                    className="utxo-value text-primary mt-3"
+                    key={x.outpoint.transactionId}
+                  >
                     <Col sm={7} md={7}>
                       {moment(
                         (currentEpochTime -
@@ -841,29 +812,3 @@ const AddressInfo = () => {
 };
 
 export default AddressInfoPage;
-
-// Hash	f08eeaff68bc2ba4f2001cda61263549d64fca9a2293b8fabd9ebec2b9882433
-// Is Header Only	false
-// Blue Score	22632652
-// Version	1
-// Parents (3)
-// caa643e423bb0c326a99f76a2622afef5858fb89fb099d670a4c91cea3b37f20
-// c03e33ccafb49806fe3b58b2821e2998409b05c328d9b37e547928b85d562909
-// 3c63790b7f8b809ffcf90b429507ec9ecd241d2c3561fc20496de79a24e3a00d
-// Merkle Root	784c09ff1331bc9a330c0cef85cc6578261351362240abec875ee8555fbdb8dd
-// Accepted Merkle Root	cd75b4e94ee810b0d14c41295607f4a7771a87a610542935943054447a5a9324
-// UTXO Commitment	3a480129f8578f0285dd5f4cc25b2ff0ee4828dbfa52e71c237a66befefec4ab
-// Timestamp	2022-08-15 19:41:37.000000739
-// Bits	1b0754ff, 754ff000000000000000000000000000000000000000000000000
-// Nonce	f3b3a7e035c3589
-// DAA Score	24136925
-// Blue Work	68851a3d36517ab64
-// Pruning Point
-// d03fcd0ac26fb847a283464c922cbf9c76a88d6129edac5b976f9ee6caee842c
-// Transactions (6)
-// 10d1c9d9dbb5d7cbd4d5c34e629a6b68cad7b4548bd652ebb54e16355a030d3c
-// 87d8770820d9f038706e74b19e302193ac46b916290ce0745da27afc8020e1d2
-// b14a788379bf2e6ec6ab85feb605c36bb7be073f915496089f4f9f6d8d11a783
-// 517da75098711b66b21de6da8fa47f300bf621b5fee7adf631f90de04c478bb4
-// ea3ef1db0e07a4ad7ebaca3140d58842e1a344d5e1da2cd94002b56ba1e0096c
-// 4492281822a4dd2f97920fb0f595523361f266796b71bec49a60cb2228f5f1a0

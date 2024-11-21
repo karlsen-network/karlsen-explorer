@@ -33,6 +33,17 @@ export async function getBlockdagInfo() {
   return res;
 }
 
+export async function getKarlsendInfo() {
+  const res = await fetch(`https://${apiAddress}/info/karlsend`, {
+    headers: { "Access-Control-Allow-Origin": "*" },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    });
+  return res;
+}
+
 export async function getCoinSupply() {
   const res = await fetch(`https://${apiAddress}/info/coinsupply`, {
     headers: { "Access-Control-Allow-Origin": "*" },
@@ -121,4 +132,34 @@ export async function getTransactions(tx_list, inputs, outputs) {
       return data;
     });
   return res;
+}
+
+export async function getTopWallets(limit = 10000, offset = 0) {
+  const res = await fetch(
+    `https://${apiAddress}/analytics/addresses/top?limit=${limit}&offset=${offset}`,
+    {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    },
+  );
+  const data = await res.json();
+  return data.top_addresses;
+}
+
+export async function getTotalAddresses() {
+  const res = await fetch(`https://${apiAddress}/analytics/addresses/total`, {
+    headers: { "Access-Control-Allow-Origin": "*" },
+  });
+  const data = await res.json();
+  return data.total_addresses;
+}
+
+export async function getAddressDistribution(minAmount, maxAmount = -1) {
+  const res = await fetch(
+    `https://${apiAddress}/analytics/addresses/distribution?min_amount=${minAmount}&max_amount=${maxAmount}`,
+    {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    },
+  );
+  const data = await res.json();
+  return data.from_addresses_total;
 }

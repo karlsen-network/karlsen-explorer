@@ -211,8 +211,8 @@ body {
 
 @include media-breakpoint-up(md) {
   .big-karlsen-icon {
-    width: 10rem;
-    height: 10rem;
+    width: 9rem;
+    height: 9rem;
   }
 }
 
@@ -587,11 +587,91 @@ body {
 }
 
 .hashh {
-  white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  // max-width:1px;
   max-width: 1px;
+}
+
+.distribution {
+  text-overflow: unset;
+  overflow: visible;
+  max-width: none;
+}
+
+.styled-table {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: visible;
+  table-layout: auto;
+  white-space: normal;
+}
+
+/* scroll on smaller screens (below 1200px) */
+@media (max-width: 1200px) {
+  .styled-table {
+    overflow-x: auto;
+    display: block;
+    white-space: nowrap;
+  }
+}
+
+.top-table {
+  color: $color5;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: visible;
+  margin: 0 auto;
+  white-space: normal;
+}
+
+@keyframes anim {
+  0% {
+    background-color: rgba($color3, 0.6);
+  }
+  100% {
+    background-color: rgba($color3, 0);
+  }
+}
+
+.top-table th,
+.top-table td {
+  font-family: "Roboto Mono";
+  padding: 0.7rem 1rem;
+}
+
+@include media-breakpoint-down(sm) {
+  .top-table th,
+  .top-table td {
+    font-size: x-small;
+    padding: 0.7rem 0.5rem;
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  .top-table th,
+  .top-table td {
+    font-size: medium;
+  }
+}
+
+.top-table thead tr {
+  border-bottom: 2px solid $color3;
+}
+
+.top-table tbody tr {
+  border-bottom: 1px solid $color3;
+  animation: anim 0.4s;
+  text-align: left;
+  font-weight: normal;
+}
+
+.top-table tbody tr:last-of-type {
+  border-bottom: 2px solid $color1;
+}
+
+.top-table tbody tr:hover {
+  color: $color2;
+  cursor: pointer;
 }
 
 .klsBlockHeader {

@@ -17,7 +17,6 @@ import BalanceModal from "./components/BalanceModal";
 import BlockDAGBox from "./components/BlockDAG";
 import BlockOverview from "./components/BlockOverview";
 import CoinsupplyBox from "./components/CoinsupplyBox";
-import KarlsendInfoBox from "./components/KarlsendInfoBox";
 import MarketDataBox from "./components/MarketDataBox";
 import TxOverview from "./components/TxOverview";
 import { getBlock } from "./karlsen-api-client";
@@ -27,12 +26,11 @@ function Dashboard() {
   const navigate = useNavigate();
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   const [showLoadingModal, setShowLoadingModal] = useState(false);
 
-  const [balance, setBalance] = useState(0);
-  const [address, setAddress] = useState("karlsen:");
+  const balance = useState(0);
+  const address = useState("karlsen:");
 
   const search = (e) => {
     e.preventDefault();
@@ -40,18 +38,16 @@ function Dashboard() {
 
     setShowLoadingModal(true);
 
-    if (v.length == 64) {
+    if (v.length === 64) {
       getBlock(v)
         .then((data) => {
-          if (data.detail == "Block not found") {
+          if (data.detail === "Block not found") {
             navigate(`/txs/${v}`);
           } else {
             navigate(`/blocks/${v}`);
           }
         })
-        .catch((err) => {
-          console.log("hier");
-        });
+        .catch((err) => {});
     }
 
     if (v.startsWith("karlsen:")) {
@@ -79,7 +75,11 @@ function Dashboard() {
               md={12}
               className="d-flex flex-row justify-content-start text-light d-xs-none align-items-center"
             >
-              <img className="big-karlsen-icon" src="/k-icon-glow.png" />
+              <img
+                className="big-karlsen-icon"
+                src="/k-icon-glow.png"
+                alt="Karlsen Logo"
+              />
               <div className="bigfont">
                 KARLSEN
                 <br />
@@ -113,22 +113,17 @@ function Dashboard() {
       <div className="row2">
         <Container className="secondRow webpage" fluid>
           <Row>
-            <Col sm={12} md={6} xl={3}>
+            <Col sm={12} md={6} xl={4}>
               <div className="infoBox">
                 <CoinsupplyBox />
               </div>
             </Col>
-            <Col sm={12} md={6} xl={3}>
+            <Col sm={12} md={6} xl={4}>
               <div className="infoBox">
                 <BlockDAGBox />
               </div>
             </Col>
-            <Col sm={12} md={6} xl={3}>
-              <div className="infoBox">
-                <KarlsendInfoBox />
-              </div>
-            </Col>
-            <Col sm={12} md={6} xl={3}>
+            <Col sm={12} md={6} xl={4}>
               <div className="infoBox">
                 <MarketDataBox />
               </div>
