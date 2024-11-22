@@ -163,3 +163,14 @@ export async function getAddressDistribution(minAmount, maxAmount = -1) {
   const data = await res.json();
   return data.from_addresses_total;
 }
+
+export async function getWalletsInRange(minAmount, maxAmount) {
+  const res = await fetch(
+    `https://${apiAddress}/analytics/addresses/range?min_amount=${minAmount}&max_amount=${maxAmount}`,
+    {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    },
+  );
+  const data = await res.json();
+  return data;
+}

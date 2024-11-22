@@ -34,6 +34,13 @@ import Dashboard from "./Dashboard";
 import Distribution from "./components/Distribution";
 import { getBlock } from "./karlsen-api-client";
 import { apiAddress } from "./addresses";
+import DistributionRangePage10m from "./components/rangepages/DistributionRangePage10m";
+import DistributionRangePage1m from "./components/rangepages/DistributionRangePage1m";
+import DistributionRangePage500k from "./components/rangepages/DistributionRangePage500k";
+import DistributionRangePage100k from "./components/rangepages/DistributionRangePage100k";
+import DistributionRangePage10k from "./components/rangepages/DistributionRangePage10k";
+import DistributionRangePage1k from "./components/rangepages/DistributionRangePage1k";
+import DistributionRangePage100 from "./components/rangepages/DistributionRangePage100";
 
 const buildVersion = process.env.REACT_APP_VERCEL_GIT_COMMIT_SHA || "xxxxxx";
 
@@ -274,9 +281,23 @@ function App() {
               <Route path="/addresses/:addr" element={<AddressInfoPage />} />
               <Route path="/txs" element={<TxPage />} />
               <Route path="/txs/:id" element={<TransactionInfo />} />
+
+              <Route path="/range/10m" element={<DistributionRangePage10m />} />
+              <Route path="/range/1m" element={<DistributionRangePage1m />} />
+              <Route
+                path="/range/500k"
+                element={<DistributionRangePage500k />}
+              />
+              <Route
+                path="/range/100k"
+                element={<DistributionRangePage100k />}
+              />
+              <Route path="/range/10k" element={<DistributionRangePage10k />} />
+              <Route path="/range/1k" element={<DistributionRangePage1k />} />
+              <Route path="/range/100" element={<DistributionRangePage100 />} />
+
               <Route path="*" element={<NotFound />} />
             </Routes>
-            {/* <div className="alpha">ALPHA VERSION</div> */}
           </div>
           <div className="text-light footerfull d-flex flex-row justify-content-center px-0">
             <Container

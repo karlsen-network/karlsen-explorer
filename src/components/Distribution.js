@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { Spinner, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FaWallet } from "react-icons/fa";
@@ -9,6 +9,7 @@ import {
 } from "../karlsen-api-client";
 import { PieChart, pieChartDefaultProps } from "react-minimal-pie-chart";
 import { useWindowSize } from "react-use";
+import addressTags from "./addressTags";
 
 const Distribution = () => {
   const [wallets, setWallets] = useState([]);
@@ -17,56 +18,86 @@ const Distribution = () => {
   const [loading, setLoading] = useState(true);
   const { width } = useWindowSize();
 
-  // define the address to tag mapping as a const
-  const addressTags = {
-    "karlsen:qrdn0eyzyc2z4leqwgxcngt98su5gq4p47gz435q8mu2wh8c78502qlfquvnj":
-      "(Mexc)",
-    "karlsen:qpjnywfxsdrj3nkuscf4mc0m457wt35sgfgfv379zuuekl6z0ulwkkgayg83r":
-      "Xeggex",
-    "karlsen:qqlahashstjepzax3sa33vdn6a7tul5wvqs8adzgrr6lzt280ctw5my64p427":
-      "NonKYC",
-  };
-
-  // distribution ranges with labels and colors
-  const distributionThresholds = [
-    { threshold: 10000000, label: ">10M KLS", color: "#1F3954" },
-    { threshold: 1000000, label: ">1M KLS", color: "#213A53" },
-    { threshold: 500000, label: ">500K KLS", color: "#445A6F" },
-    { threshold: 100000, label: ">100K KLS", color: "#66788A" },
-    { threshold: 10000, label: ">10K KLS", color: "#8492A2" },
-    { threshold: 1000, label: ">1K KLS", color: "#8C9BA8" },
-    { threshold: 100, label: ">100 KLS", color: "#AAB9C5" },
-  ];
+  const distributionThresholds = useMemo(
+    () => [
+      {
+        threshold: 10000000,
+        label: ">10M KLS",
+        color: "#1F3954",
+        link: "/range/10m",
+      },
+      {
+        threshold: 1000000,
+        label: ">1M KLS",
+        color: "#213A53",
+        link: "/range/1m",
+      },
+      {
+        threshold: 500000,
+        label: ">500K KLS",
+        color: "#445A6F",
+        link: "/range/500k",
+      },
+      {
+        threshold: 100000,
+        label: ">100K KLS",
+        color: "#66788A",
+        link: "/range/100k",
+      },
+      {
+        threshold: 10000,
+        label: ">10K KLS",
+        color: "#8492A2",
+        link: "/range/10k",
+      },
+      {
+        threshold: 1000,
+        label: ">1K KLS",
+        color: "#8C9BA8",
+        link: "/range/1k",
+      },
+      {
+        threshold: 100,
+        label: ">100 KLS",
+        color: "#AAB9C5",
+        link: "/range/100",
+      },
+    ],
+    [],
+  );
 
   // distribution data based on thresholds
-  const fetchDistributions = async (totalAddressesCount) => {
-    try {
-      const distributionData = await Promise.all(
-        distributionThresholds.map(({ threshold }) =>
-          getAddressDistribution(threshold),
-        ),
-      );
+  const fetchDistributions = useCallback(
+    async (totalAddressesCount) => {
+      try {
+        const distributionData = await Promise.all(
+          distributionThresholds.map(({ threshold }) =>
+            getAddressDistribution(threshold),
+          ),
+        );
 
-      const distributions = distributionThresholds.map((item, index) => ({
-        ...item,
-        value: distributionData[index],
-      }));
+        const distributions = distributionThresholds.map((item, index) => ({
+          ...item,
+          value: distributionData[index],
+        }));
 
-      const others =
-        totalAddressesCount - distributionData[distributionData.length - 1];
+        const others =
+          totalAddressesCount - distributionData[distributionData.length - 1];
 
-      // 'Others'
-      distributions.push({
-        label: "Others",
-        value: others,
-        color: "#D9DDE2",
-      });
+        // 'Others'
+        distributions.push({
+          label: "Others",
+          value: others,
+          color: "#D9DDE2",
+        });
 
-      return distributions;
-    } catch (error) {
-      throw new Error("Error fetching distribution data");
-    }
-  };
+        return distributions;
+      } catch (error) {
+        throw new Error("Error fetching distribution data");
+      }
+    },
+    [distributionThresholds],
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,7 +125,7 @@ const Distribution = () => {
     };
 
     fetchData();
-  }, []);
+  }, [fetchDistributions]);
 
   // total for chart percentages
   const totalForChart = distributions.reduce(
@@ -115,7 +146,7 @@ const Distribution = () => {
         <div className="block-overview mb-4">
           <div className="d-flex flex-row w-100">
             <h4 className="block-overview-header text-center w-100 mt-4">
-              <FaWallet className="rotate" size="1.7rem" />
+              <FaWallet className={loading ? "rotate" : ""} size="1.7rem" />{" "}
               Distribution
             </h4>
           </div>
@@ -137,9 +168,13 @@ const Distribution = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {distributions.map(({ label, value }) => (
+                    {distributions.map(({ label, value, link }) => (
                       <tr key={label}>
-                        <td>{label}</td>
+                        <td>
+                          <Link to={link} className="blockinfo-link">
+                            {label}
+                          </Link>
+                        </td>
                         <td align="left">{value}</td>
                       </tr>
                     ))}
@@ -176,6 +211,7 @@ const Distribution = () => {
                     <tr>
                       <th>Rank</th>
                       <th>Amount</th>
+                      <th>Supply</th>
                       <th>Address</th>
                       <th>Tags</th>
                     </tr>
@@ -185,6 +221,7 @@ const Distribution = () => {
                       <tr key={wallet.address}>
                         <td>{index + 1}</td>
                         <td>{wallet.amount}&nbsp;KLS</td>
+                        <td>{wallet.percent}%</td>
                         <td className="distribution">
                           <Link
                             to={`/addresses/${wallet.address}`}
