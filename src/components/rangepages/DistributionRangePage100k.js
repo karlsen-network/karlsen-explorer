@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Spinner, Container } from "react-bootstrap";
 import { FaWallet } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import { getWalletsInRange } from "../../karlsen-api-client";
 import addressTags from "../addressTags";
 
@@ -59,7 +60,14 @@ const DistributionRangePage100k = () => {
                       <td>{index + 1}</td>
                       <td>{wallet.amount} KLS</td>
                       <td>{wallet.percent}%</td>
-                      <td>{wallet.address}</td>
+                      <td>
+                        <Link
+                          to={`/addresses/${wallet.address}`}
+                          className="blockinfo-link"
+                        >
+                          {wallet.address}
+                        </Link>
+                      </td>
                       <td>{addressTags[wallet.address] || ""}</td>
                     </tr>
                   ))}
