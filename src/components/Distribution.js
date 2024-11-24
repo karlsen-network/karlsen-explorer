@@ -22,43 +22,43 @@ const Distribution = () => {
     () => [
       {
         threshold: 10000000,
-        label: ">10M KLS",
+        label: "10M+ KLS",
         color: "#1F3954",
         link: "/range/10m",
       },
       {
         threshold: 1000000,
-        label: ">1M KLS",
+        label: "1M - 10M KLS",
         color: "#213A53",
         link: "/range/1m",
       },
       {
         threshold: 500000,
-        label: ">500K KLS",
+        label: "500K - 1M KLS",
         color: "#445A6F",
         link: "/range/500k",
       },
       {
         threshold: 100000,
-        label: ">100K KLS",
+        label: "100K - 500K KLS",
         color: "#66788A",
         link: "/range/100k",
       },
       {
         threshold: 10000,
-        label: ">10K KLS",
+        label: "10K - 100K KLS",
         color: "#8492A2",
         link: "/range/10k",
       },
       {
         threshold: 1000,
-        label: ">1K KLS",
+        label: "1K - 10K KLS",
         color: "#8C9BA8",
         link: "/range/1k",
       },
       {
         threshold: 100,
-        label: ">100 KLS",
+        label: "100 - 1K KLS",
         color: "#AAB9C5",
         link: "/range/100",
       },
@@ -81,13 +81,13 @@ const Distribution = () => {
           value: distributionData[index],
         }));
 
-        const others =
+        const below100 =
           totalAddressesCount - distributionData[distributionData.length - 1];
 
-        // 'Others'
+        // "0 - 100 KLS" range
         distributions.push({
-          label: "Others",
-          value: others,
+          label: "0 - 100 KLS",
+          value: below100,
           color: "#D9DDE2",
         });
 
