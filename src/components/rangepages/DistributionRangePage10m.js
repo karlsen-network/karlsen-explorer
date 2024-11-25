@@ -30,7 +30,7 @@ const DistributionRangePage10m = () => {
         setLoading(true);
 
         // Fetch wallets within the range 10m to inifnite
-        const walletsData = await getWalletsInRange(10000000, 100000000);
+        const walletsData = await getWalletsInRange(10000000, -1);
         setWallets(walletsData);
 
         setLoading(false);
