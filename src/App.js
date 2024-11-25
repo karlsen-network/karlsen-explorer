@@ -41,6 +41,7 @@ import DistributionRangePage100k from "./components/rangepages/DistributionRange
 import DistributionRangePage10k from "./components/rangepages/DistributionRangePage10k";
 import DistributionRangePage1k from "./components/rangepages/DistributionRangePage1k";
 import DistributionRangePage100 from "./components/rangepages/DistributionRangePage100";
+import DistributionRangePage1 from "./components/rangepages/DistributionRangePage1";
 
 const buildVersion = process.env.REACT_APP_VERCEL_GIT_COMMIT_SHA || "xxxxxx";
 
@@ -295,6 +296,7 @@ function App() {
               <Route path="/range/10k" element={<DistributionRangePage10k />} />
               <Route path="/range/1k" element={<DistributionRangePage1k />} />
               <Route path="/range/100" element={<DistributionRangePage100 />} />
+              <Route path="/range/1" element={<DistributionRangePage1 />} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>

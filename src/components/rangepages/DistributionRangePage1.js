@@ -8,7 +8,7 @@ import addressTags from "../addressTags";
 
 const WALLETS_PER_PAGE = 100;
 
-const DistributionRangePage1m = () => {
+const DistributionRangePage1 = () => {
   const [wallets, setWallets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,8 +29,8 @@ const DistributionRangePage1m = () => {
       try {
         setLoading(true);
 
-        // Fetch wallets within the range 1m to 10m
-        const walletsData = await getWalletsInRange(1000000, 10000000);
+        // Fetch wallets within the range 1 to 100 KLS
+        const walletsData = await getWalletsInRange(1, 100);
         setWallets(walletsData);
 
         setLoading(false);
@@ -64,8 +64,8 @@ const DistributionRangePage1m = () => {
         <div className="block-overview mb-4">
           <div className="d-flex flex-row w-100">
             <h4 className="block-overview-header text-center w-100 mt-4">
-              <FaWallet className={loading ? "rotate" : ""} size="1.7rem" /> 1m
-              to 10m KLS
+              <FaWallet className={loading ? "rotate" : ""} size="1.7rem" /> 1
+              to 100 KLS
             </h4>
           </div>
           <div className="block-overview-content">
@@ -149,4 +149,4 @@ const DistributionRangePage1m = () => {
   );
 };
 
-export default DistributionRangePage1m;
+export default DistributionRangePage1;
