@@ -34,49 +34,63 @@ const Distribution = () => {
     return wallets.slice(startIndex, startIndex + WALLETS_PER_PAGE);
   }, [wallets, currentPage]);
 
-  const distributionThresholds = useMemo(
+  const distributionRanges = useMemo(
     () => [
       {
-        threshold: 10000000,
+        min: 10000000,
+        max: -1,
         label: "10M+ KLS",
         color: "#1F3954",
         link: "/range/10m",
       },
       {
-        threshold: 1000000,
+        min: 1000000,
+        max: 10000000,
         label: "1M - 10M KLS",
         color: "#213A53",
         link: "/range/1m",
       },
       {
-        threshold: 500000,
+        min: 500000,
+        max: 1000000,
         label: "500K - 1M KLS",
         color: "#445A6F",
         link: "/range/500k",
       },
       {
-        threshold: 100000,
+        min: 100000,
+        max: 500000,
         label: "100K - 500K KLS",
         color: "#66788A",
         link: "/range/100k",
       },
       {
-        threshold: 10000,
+        min: 10000,
+        max: 100000,
         label: "10K - 100K KLS",
         color: "#8492A2",
         link: "/range/10k",
       },
       {
-        threshold: 1000,
+        min: 1000,
+        max: 10000,
         label: "1K - 10K KLS",
         color: "#8C9BA8",
         link: "/range/1k",
       },
       {
-        threshold: 100,
+        min: 100,
+        max: 1000,
         label: "100 - 1K KLS",
         color: "#AAB9C5",
         link: "/range/100",
+      },
+      {
+        min: 1,
+        max: 100,
+        label: "1 - 100 KLS",
+        color: "#D9DDE2",
+        link: "/range/1",
       },
     ],
     [],
@@ -87,33 +101,22 @@ const Distribution = () => {
     async (totalAddressesCount) => {
       try {
         const distributionData = await Promise.all(
-          distributionThresholds.map(({ threshold }) =>
-            getAddressDistribution(threshold),
+          distributionRanges.map(({ min, max }) =>
+            getAddressDistribution(min, max),
           ),
         );
 
-        const distributions = distributionThresholds.map((item, index) => ({
+        const distributions = distributionRanges.map((item, index) => ({
           ...item,
           value: distributionData[index],
         }));
-
-        const below100 =
-          totalAddressesCount - distributionData[distributionData.length - 1];
-
-        // "0 - 100 KLS" range
-        distributions.push({
-          label: "0 - 100 KLS",
-          value: below100,
-          color: "#D9DDE2",
-          link: "/range/1",
-        });
 
         return distributions;
       } catch (error) {
         throw new Error("Error fetching distribution data");
       }
     },
-    [distributionThresholds],
+    [distributionRanges],
   );
 
   useEffect(() => {
