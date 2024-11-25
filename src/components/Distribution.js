@@ -1,22 +1,38 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { Spinner, Container } from "react-bootstrap";
+import { Spinner, Container, Row, Col, Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FaWallet } from "react-icons/fa";
+import { PieChart, pieChartDefaultProps } from "react-minimal-pie-chart";
+import { useWindowSize } from "react-use";
 import {
   getTopWallets,
   getTotalAddresses,
   getAddressDistribution,
 } from "../karlsen-api-client";
-import { PieChart, pieChartDefaultProps } from "react-minimal-pie-chart";
-import { useWindowSize } from "react-use";
+import UtxoPagination from "./UtxoPagination";
 import addressTags from "./addressTags";
+
+const WALLETS_PER_PAGE = 100;
 
 const Distribution = () => {
   const [wallets, setWallets] = useState([]);
   const [totalAddresses, setTotalAddresses] = useState(0);
   const [distributions, setDistributions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageError, setPageError] = useState(false);
+
   const { width } = useWindowSize();
+
+  const totalPages = useMemo(
+    () => Math.ceil(wallets.length / WALLETS_PER_PAGE),
+    [wallets],
+  );
+
+  const paginatedWallets = useMemo(() => {
+    const startIndex = (currentPage - 1) * WALLETS_PER_PAGE;
+    return wallets.slice(startIndex, startIndex + WALLETS_PER_PAGE);
+  }, [wallets, currentPage]);
 
   const distributionThresholds = useMemo(
     () => [
@@ -89,6 +105,7 @@ const Distribution = () => {
           label: "0 - 100 KLS",
           value: below100,
           color: "#D9DDE2",
+          link: "/range/1",
         });
 
         return distributions;
@@ -126,6 +143,21 @@ const Distribution = () => {
 
     fetchData();
   }, [fetchDistributions]);
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      setPageError(false);
+    } else {
+      setPageError(true);
+    }
+  };
+
+  const handleGoToPage = (e) => {
+    e.preventDefault();
+    const pageNo = parseInt(e.target.pageNo.value, 10);
+    handlePageChange(pageNo);
+  };
 
   // total for chart percentages
   const totalForChart = distributions.reduce(
@@ -217,9 +249,11 @@ const Distribution = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {wallets.map((wallet, index) => (
+                    {paginatedWallets.map((wallet, index) => (
                       <tr key={wallet.address}>
-                        <td>{index + 1}</td>
+                        <td>
+                          {(currentPage - 1) * WALLETS_PER_PAGE + index + 1}
+                        </td>
                         <td>{wallet.amount}&nbsp;KLS</td>
                         <td>{wallet.percent}%</td>
                         <td className="distribution">
@@ -235,6 +269,40 @@ const Distribution = () => {
                     ))}
                   </tbody>
                 </table>
+
+                <Row className="mt-4">
+                  <Col
+                    xs={12}
+                    sm={6}
+                    className="d-flex flex-row justify-content-center mb-3 mb-sm-0"
+                  >
+                    <div className="me-auto">
+                      <Form onSubmit={handleGoToPage} className="d-flex">
+                        <Form.Control
+                          type="text"
+                          name="pageNo"
+                          placeholder="Page"
+                          className={`me-2 ${pageError ? "is-invalid" : ""}`}
+                          style={{ width: "80px" }}
+                        />
+                        <Button type="submit" variant="dark">
+                          Go
+                        </Button>
+                      </Form>
+                    </div>
+                  </Col>
+                  <Col
+                    xs={12}
+                    sm={6}
+                    className="d-flex flex-row justify-content-end"
+                  >
+                    <UtxoPagination
+                      active={currentPage}
+                      total={totalPages}
+                      setActive={handlePageChange}
+                    />
+                  </Col>
+                </Row>
               </>
             )}
           </div>
