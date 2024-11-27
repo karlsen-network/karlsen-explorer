@@ -199,21 +199,43 @@ const Distribution = () => {
                 <table className="top-table w-100 mb-4">
                   <thead>
                     <tr>
-                      <th>Distribution Range</th>
-                      <th align="right">Number of Addresses</th>
+                      <th>Range</th>
+                      <th>Addresses</th>
+                      <th>Percentage</th>
+                      <th>Symbol</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {distributions.map(({ label, value, link }) => (
-                      <tr
-                        key={label}
-                        onClick={() => navigate(link)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <td>{label}</td>
-                        <td align="left">{value}</td>
-                      </tr>
-                    ))}
+                    {distributions.map(({ label, value, link }) => {
+                      const animalSymbols = {
+                        "10M+ KLS": "🐋 Blue Whale",
+                        "1M - 10M KLS": "🐬 Orca",
+                        "500K - 1M KLS": "🦈 Great White Shark",
+                        "100K - 500K KLS": "🥽 Manta Ray",
+                        "10K - 100K KLS": "🐢 Sea Turtle",
+                        "1K - 10K KLS": "🐟 Clownfish",
+                        "100 - 1K KLS": "🐡 Seahorse",
+                        "1 - 100 KLS": "🌊 Plankton",
+                      };
+
+                      const percentage =
+                        chartData
+                          .find((data) => data.title === label)
+                          ?.value.toFixed(2) || "0.00";
+
+                      return (
+                        <tr
+                          key={label}
+                          onClick={() => navigate(link)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <td>{label}</td>
+                          <td>{value}</td>
+                          <td>{percentage}%</td>
+                          <td>{animalSymbols[label]}</td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
 
