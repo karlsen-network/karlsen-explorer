@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { Spinner, Container, Row, Col, Form, Button } from "react-bootstrap";
 import { FaWallet } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getWalletsInRange } from "../../karlsen-api-client";
 import UtxoPagination from "../UtxoPagination";
 import addressTags from "../addressTags";
@@ -9,6 +9,7 @@ import addressTags from "../addressTags";
 const WALLETS_PER_PAGE = 100;
 
 const DistributionRangePage100k = () => {
+  const navigate = useNavigate();
   const [wallets, setWallets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -87,20 +88,17 @@ const DistributionRangePage100k = () => {
                   </thead>
                   <tbody>
                     {paginatedWallets.map((wallet, index) => (
-                      <tr key={wallet.address}>
+                      <tr
+                        key={wallet.address}
+                        onClick={() => navigate(`/addresses/${wallet.address}`)}
+                        style={{ cursor: "pointer" }}
+                      >
                         <td>
                           {(currentPage - 1) * WALLETS_PER_PAGE + index + 1}
                         </td>
                         <td>{wallet.amount} KLS</td>
                         <td>{wallet.percent}%</td>
-                        <td>
-                          <Link
-                            to={`/addresses/${wallet.address}`}
-                            className="blockinfo-link"
-                          >
-                            {wallet.address}
-                          </Link>
-                        </td>
+                        <td>{wallet.address}</td>
                         <td>{addressTags[wallet.address] || ""}</td>
                       </tr>
                     ))}

@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { Spinner, Container, Row, Col, Form, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaWallet } from "react-icons/fa";
 import { PieChart, pieChartDefaultProps } from "react-minimal-pie-chart";
 import { useWindowSize } from "react-use";
@@ -22,6 +22,7 @@ const Distribution = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageError, setPageError] = useState(false);
 
+  const navigate = useNavigate();
   const { width } = useWindowSize();
 
   const totalPages = useMemo(
@@ -198,21 +199,43 @@ const Distribution = () => {
                 <table className="top-table w-100 mb-4">
                   <thead>
                     <tr>
-                      <th>Distribution Range</th>
-                      <th align="right">Number of Addresses</th>
+                      <th>Range</th>
+                      <th>Addresses</th>
+                      <th>Percentage</th>
+                      <th>Symbol</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {distributions.map(({ label, value, link }) => (
-                      <tr key={label}>
-                        <td>
-                          <Link to={link} className="blockinfo-link">
-                            {label}
-                          </Link>
-                        </td>
-                        <td align="left">{value}</td>
-                      </tr>
-                    ))}
+                    {distributions.map(({ label, value, link }) => {
+                      const animalSymbols = {
+                        "10M+ KLS": "🐋 Blue Whale",
+                        "1M - 10M KLS": "🐬 Orca",
+                        "500K - 1M KLS": "🦈 Great White Shark",
+                        "100K - 500K KLS": "🥽 Manta Ray",
+                        "10K - 100K KLS": "🐢 Sea Turtle",
+                        "1K - 10K KLS": "🐟 Clownfish",
+                        "100 - 1K KLS": "🐡 Seahorse",
+                        "1 - 100 KLS": "🌊 Plankton",
+                      };
+
+                      const percentage =
+                        chartData
+                          .find((data) => data.title === label)
+                          ?.value.toFixed(2) || "0.00";
+
+                      return (
+                        <tr
+                          key={label}
+                          onClick={() => navigate(link)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <td>{label}</td>
+                          <td>{value}</td>
+                          <td>{percentage}%</td>
+                          <td>{animalSymbols[label]}</td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
 
@@ -253,20 +276,17 @@ const Distribution = () => {
                   </thead>
                   <tbody>
                     {paginatedWallets.map((wallet, index) => (
-                      <tr key={wallet.address}>
+                      <tr
+                        key={wallet.address}
+                        onClick={() => navigate(`/addresses/${wallet.address}`)}
+                        style={{ cursor: "pointer" }}
+                      >
                         <td>
                           {(currentPage - 1) * WALLETS_PER_PAGE + index + 1}
                         </td>
                         <td>{wallet.amount}&nbsp;KLS</td>
                         <td>{wallet.percent}%</td>
-                        <td className="distribution">
-                          <Link
-                            to={`/addresses/${wallet.address}`}
-                            className="blockinfo-link"
-                          >
-                            {wallet.address}
-                          </Link>
-                        </td>
+                        <td>{wallet.address}</td>
                         <td>{addressTags[wallet.address] || ""}</td>
                       </tr>
                     ))}
