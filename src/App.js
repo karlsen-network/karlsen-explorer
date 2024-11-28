@@ -104,7 +104,7 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setPrice(data["current_price"]["usd"].toFixed(4));
+        setPrice(data["current_price"]["usd"].toFixed(5));
         setMarketData(data);
       })
       .catch((r) => console.log(r));
